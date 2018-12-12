@@ -8,7 +8,19 @@ const signals = [
   [162, 162, 161, 163, 162, 157, 157, 157],
   [162, 162, 161, 161, 163, 158, 158, 158]
 ];
-const qtable = [
+
+let defaulTable = [
+  [16, 11, 10, 16, 34, 40, 51, 61],
+  [12, 12, 14, 19, 26, 58, 60, 55],
+  [14, 13, 16, 24, 40, 57, 69, 56],
+  [14, 17, 22, 29, 51, 87, 80, 62],
+  [18, 22, 37, 56, 68, 109, 103, 77],
+  [24, 35, 55, 64, 81, 104, 113, 92],
+  [49, 64, 78, 87, 103, 121, 120, 101],
+  [72, 92, 95, 98, 112, 100, 103, 99]
+];
+
+let qtable = [
   [16, 11, 10, 16, 34, 40, 51, 61],
   [12, 12, 14, 19, 26, 58, 60, 55],
   [14, 13, 16, 24, 40, 57, 69, 56],
@@ -181,8 +193,8 @@ function make2DArray(a, b) {
 // console.log(dequantized);
 // console.log(reconstructed);
 
-// http://js2.coffee/ 
-// https://codepen.io/32bitkid/post/exploring-the-dct-part-ii
+// http://js2.coffee/
+// https://codepen.io/32bitkid/post/exploring-the-discrete-cosine-transform
 function dct(input) {
   var au, av, i, j, k, l, output, sum, u, v, val, x, y;
   output = [];
@@ -205,8 +217,8 @@ function dct(input) {
   return output;
 }
 
-// http://js2.coffee/
-// https://codepen.io/32bitkid/post/exploring-the-discrete-cosine-transform
+// http://js2.coffee/ 
+// https://codepen.io/32bitkid/post/exploring-the-dct-part-ii
 function idct1d(block) {
   var au, av, i, j, k, l, output, sum, u, v, val, x, y;
   output = [];

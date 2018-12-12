@@ -27,27 +27,27 @@ function addImage(image, cnvs) {
     img.onload = () => {
         let canvas = document.getElementById(cnvs);
         canvas.width = img.width;
-        canvas.height = img.height;
+        canvas.height = img.width;
         canvas.getContext('2d').drawImage(img, 0, 0);
-
-        // encode
-        console.log(canvas.getContext('2d').getImageData(0, 0, img.width, img.height).data);
-        encoded = encodeCanvasImage(canvas);
-        console.log(RGBArrayToStream(encoded));
-        let compressedResults = compressionRatio(encoded);
-        setMetaText(`You compressed ${compressedResults[0]} of the image, being ${formatBytes(compressedResults[1])} of the original ${formatBytes(compressedResults[2])}`);
-        
-        // decode
-        let decoded = decodeRGBA(encoded);
-        let data = new Uint8ClampedArray(RGBArrayToStream(decoded));
-        console.log(data);
-
-        // set
-        let after = document.getElementById("cnvsLennaAfter");
-        after.width = img.width;
-        after.height = img.height;
-        after.getContext('2d').putImageData(new ImageData(data, img.width, img.height), 0,0,0,0,img.width, img.height);
+        let encodeDecodeResults = encodeDecode(canvas);
+        setMetaText(`You compressed ${encodeDecodeResults[1]} of the image, being ${formatBytes(encodeDecodeResults[2])} of the original ${formatBytes(encodeDecodeResults[3])}`);
+        streamToCanvas("cnvsLennaAfter", encodeDecodeResults[0], img.width, img.width);
      };
+}
+
+function encodeDecode(originalCanvas) {
+    encoded = encodeCanvasImage(originalCanvas);
+    let cr = compressionRatio(encoded);
+    let decoded = decodeRGBA(encoded);
+    let data = new Uint8ClampedArray(RGBArrayToStream(decoded));
+    return [data, cr[0], cr[1], cr[2]]; // rgba stream, compressed ratio, after size, original size
+}
+
+function streamToCanvas(canvasID, stream, width, height) {
+    let after = document.getElementById(canvasID);
+    after.width = width;
+    after.height = height;
+    after.getContext('2d').putImageData(new ImageData(stream, width, height), 0, 0, 0, 0, width, height);
 }
 
 function setMetaText(text) {
