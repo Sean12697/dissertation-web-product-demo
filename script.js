@@ -5,10 +5,11 @@ window.addEventListener('DOMContentLoaded', () => {
     let reconstructed = decode(quantized, qtable);
 
     drawOnCanvas(signals, "before", greyToHex);
-    drawOnCanvas(qtable, "table", (i) => `rgba(${i},${i},${i},0.7)`);
+    drawOnCanvas(qtable, "table", (i) => `rgba(${i},${i},${i},0.6)`);
     drawOnCanvas(reconstructed, "after", greyToHex);
 
-    addImage("lenna.png", "cnvsLennaBefore", );
+    addImage("lenna.png", "cnvsLennaBefore");
+    document.getElementById("generate").addEventListener('click', () => encodeDecodeToCanvas(document.getElementById("cnvsLennaBefore"), "cnvsLennaAfter"));
     fileUploadListener();
 });
 
@@ -30,10 +31,14 @@ function addImage(image, cnvs) {
         canvas.width = img.width;
         canvas.height = img.width;
         canvas.getContext('2d').drawImage(img, 0, 0);
-        let encodeDecodeResults = encodeDecode(canvas);
-        setMetaText(`You compressed ${encodeDecodeResults[1]} of the image, being ${formatBytes(encodeDecodeResults[2])} of the original ${formatBytes(encodeDecodeResults[3])}`);
-        streamToCanvas("cnvsLennaAfter", encodeDecodeResults[0], img.width, img.width);
+        encodeDecodeToCanvas(canvas, "cnvsLennaAfter");
      };
+}
+
+function encodeDecodeToCanvas(originalCanvas, afterCanvas) {
+    let encodeDecodeResults = encodeDecode(originalCanvas);
+    setMetaText(`You compressed ${encodeDecodeResults[1]} of the image, being ${formatBytes(encodeDecodeResults[2])} of the original ${formatBytes(encodeDecodeResults[3])}`);
+    streamToCanvas(afterCanvas, encodeDecodeResults[0], originalCanvas.width, originalCanvas.width);
 }
 
 function encodeDecode(originalCanvas) {
@@ -57,13 +62,13 @@ function setMetaText(text) {
 
 function drawOnCanvas(arr, cnvs, background) {
     let ctx = document.getElementById(cnvs).getContext("2d");
-    ctx.font = "13px Arial";
+    ctx.font = "18px Arial";
     arr.forEach((x, i) => {
         x.forEach((y, j) => {
             ctx.fillStyle = background(y);
             ctx.fillRect(j * 50, i * 50, 50, 50);
             ctx.fillStyle = "#000";
-            ctx.fillText(y, j * 50 + 2, i * 50 + 15);
+            ctx.fillText(y, j * 50 + 2, i * 50 + 18);
         });
     });
 }

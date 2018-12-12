@@ -25,6 +25,15 @@ canvas {
     height: 80%;
 }
 
+#scales div {
+    display: inline-block;
+    width: 30%;
+}
+
+#scales div p {
+    margin: 8px;
+}
+
 /* LOAD SPINNER */
 
 .loader {

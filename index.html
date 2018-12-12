@@ -3,22 +3,32 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Personalised JPEG Quantisation Table</title>
+    <title>Personalised JPEG Quantization Table</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="style.css"/>
     <script src="dct-based-encoder.js"></script>
     <script src="script.js"></script>
 </head>
 <body>
-    <h1>Personalised JPEG Quantisation Table</h1>
+    <h1>Personalised JPEG Quantization Table</h1>
     <article>
         <section><h2>Before</h2></section>
-        <section></section>
+        <section><h2>Quantize</h2></section>
         <section><h2>After</h2></section>
     </article>
     <article>
         <section><canvas id="before" width="400px" height="400px"></canvas></section>
-        <section><canvas id="table" width="400px" height="400px"></canvas></section>
+        <section>
+            <div id="scales">
+                <div><input type="range" id="high" min="0" max="10"><p>High</p></div>
+                <div><input type="range" id="mid" min="0" max="10"><p>Mid</p></div>
+                <div><input type="range" id="low" min="0" max="10"><p>Low</p></div>
+            </div>
+            <canvas id="table" width="400px" height="400px"></canvas>
+            <div id="generateElements">
+                <button id="generate">Quantize</button>
+            </div>
+        </section>
         <section><canvas id="after" width="400px" height="400px"></canvas></section>
     </article>
     <article>
