@@ -35,7 +35,7 @@ function addImage(image, cnvs) {
         encoded = encodeCanvasImage(canvas);
         console.log(RGBArrayToStream(encoded));
         let compressedResults = compressionRatio(encoded);
-        setMetaText(`You compressed ${compressedResults[0]} of the image, being ${compressedResults[1]} of the original ${compressedResults[2]} bytes`);
+        setMetaText(`You compressed ${compressedResults[0]} of the image, being ${formatBytes(compressedResults[1])} of the original ${formatBytes(compressedResults[2])}`);
         
         // decode
         let decoded = decodeRGBA(encoded);

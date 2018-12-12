@@ -154,6 +154,16 @@ function flattern(array) {
   return [].concat.apply([], array);
 }
 
+// https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
+function formatBytes(a, b) {
+  if (0 == a) return "0 Bytes";
+  var c = 1024,
+      d = b || 2,
+      e = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"],
+      f = Math.floor(Math.log(a) / Math.log(c));
+  return parseFloat((a / Math.pow(c, f)).toFixed(d)) + " " + e[f]
+}
+
 function make2DArray(a, b) {
   var arr = new Array(a);
   for (var i = 0; i < a; i++) arr[i] = new Array(b); 
@@ -171,15 +181,16 @@ function make2DArray(a, b) {
 // console.log(dequantized);
 // console.log(reconstructed);
 
-// http://refactorman.com/2015/04/28/exploring-the-dct-part-i/
+// http://js2.coffee/ 
+// https://codepen.io/32bitkid/post/exploring-the-dct-part-ii
 function dct(input) {
-  var output = [],
-    v, u, x, y, sum, val, au, av;
-  for (v = 0; v < 8; v++) {
-    for (u = 0; u < 8; u++) {
+  var au, av, i, j, k, l, output, sum, u, v, val, x, y;
+  output = [];
+  for (v = i = 0; i < 8; v = ++i) {
+    for (u = j = 0; j < 8; u = ++j) {
       sum = 0;
-      for (y = 0; y < 8; y++) {
-        for (x = 0; x < 8; x++) {
+      for (y = k = 0; k < 8; y = ++k) {
+        for (x = l = 0; l < 8; x = ++l) {
           val = input[y * 8 + x];
           val *= Math.cos(((2 * x + 1) * u * Math.PI) / 16);
           val *= Math.cos(((2 * y + 1) * v * Math.PI) / 16);
@@ -194,18 +205,28 @@ function dct(input) {
   return output;
 }
 
-function idct1d(dct) {
-  var N = dct.length,
-    signal = [],
-    sum, k, n, s;
-
-  for (n = 0; n < N; n++) {
-    sum = 0;
-    for (k = 0; k < N; k++) {
-      s = k === 0 ? Math.sqrt(0.5) : 1;
-      sum += s * dct[k] * Math.cos(Math.PI * (n + 0.5) * k / N);
+// http://js2.coffee/
+// https://codepen.io/32bitkid/post/exploring-the-discrete-cosine-transform
+function idct1d(block) {
+  var au, av, i, j, k, l, output, sum, u, v, val, x, y;
+  output = [];
+  for (y = i = 0; i < 8; y = ++i) {
+    for (x = j = 0; j < 8; x = ++j) {
+      sum = 0;
+      for (v = k = 0; k < 8; v = ++k) {
+        for (u = l = 0; l < 8; u = ++l) {
+          au = u === 0 ? 1 / Math.SQRT2 : 1;
+          av = v === 0 ? 1 / Math.SQRT2 : 1;
+          val = block[v * 8 + u];
+          val *= au;
+          val *= av;
+          val *= Math.cos(((2 * x + 1) * u * Math.PI) / 16);
+          val *= Math.cos(((2 * y + 1) * v * Math.PI) / 16);
+          sum += val;
+        }
+      }
+      output[y * 8 + x] = 0.25 * sum;
     }
-    signal[n] = Math.sqrt(2 / N) * sum;
   }
-  return signal;
+  return output;
 };
