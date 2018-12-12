@@ -1,5 +1,6 @@
 body {
     text-align: center;
+    vertical-align: top;
 }
 
 article {
@@ -17,6 +18,11 @@ canvas {
     display: inline-block;
     width: 100%;
     height: 100%;
+}
+
+#table {
+    width: 80%;
+    height: 80%;
 }
 
 /* LOAD SPINNER */

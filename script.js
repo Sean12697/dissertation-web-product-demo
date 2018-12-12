@@ -4,10 +4,11 @@ window.addEventListener('DOMContentLoaded', () => {
     let quantized = encode(signals, qtable);
     let reconstructed = decode(quantized, qtable);
 
-    drawOnCanvas(signals, "before");
-    drawOnCanvas(reconstructed, "after");
+    drawOnCanvas(signals, "before", greyToHex);
+    drawOnCanvas(qtable, "table", (i) => `rgba(${i},${i},${i},0.7)`);
+    drawOnCanvas(reconstructed, "after", greyToHex);
 
-    addImage("lenna.png", "cnvsLennaBefore");
+    addImage("lenna.png", "cnvsLennaBefore", );
     fileUploadListener();
 });
 
@@ -54,12 +55,12 @@ function setMetaText(text) {
     document.getElementById("meta").innerHTML = text;
 }
 
-function drawOnCanvas(arr, cnvs) {
+function drawOnCanvas(arr, cnvs, background) {
     let ctx = document.getElementById(cnvs).getContext("2d");
     ctx.font = "13px Arial";
     arr.forEach((x, i) => {
         x.forEach((y, j) => {
-            ctx.fillStyle = greyToHex(y);
+            ctx.fillStyle = background(y);
             ctx.fillRect(j * 50, i * 50, 50, 50);
             ctx.fillStyle = "#000";
             ctx.fillText(y, j * 50 + 2, i * 50 + 15);

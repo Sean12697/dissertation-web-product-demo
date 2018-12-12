@@ -133,7 +133,7 @@ function setArrayBlock(array, block, x, y, xlen, ylen) {
   } return array;
 }
 
-// ----------------------- TESTS / OTHERS ------------------------
+// -------------------------- COMPRESSION ---------------------------
 
 function compressionRatio(encoded) {
   let length = RGBArrayToStream(encoded).length;
@@ -165,6 +165,24 @@ function flattern(array) {
   // in future this should be zig-zag: http://rosettacode.org/wiki/Zig-zag_matrix#JavaScript
   return [].concat.apply([], array);
 }
+
+// ------------------------------- ZIG ZAG ------------------------------
+// An assumption is they have the same height as in width
+
+function arrayToZigZag(arr) {
+  let stream = [], strips = ((arr.length * 2) + 1);
+  for (let strip = 0; strip < strips; strip++) {
+    let stripValuesCount = (arr.length > strip) ? (strip % arr.length) + 1 : arr.length - 1 - (strip % arr.length);
+    // for (let val = 0; val < stripValuesCount; val++) stream.push(arr[?][?]);
+  }
+  return stream;
+}
+
+function zigZagToArray(vect, length) {
+
+}
+
+// ------------------------------- OTHERS -------------------------------
 
 // https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
 function formatBytes(a, b) {
