@@ -162,24 +162,48 @@ function compressStream(stream) { // if 0 and previous element was 0, do not kee
 }
 
 function flattern(array) {
-  // in future this should be zig-zag: http://rosettacode.org/wiki/Zig-zag_matrix#JavaScript
-  return [].concat.apply([], array);
+  return arrayToZigZag(array);
 }
 
 // ------------------------------- ZIG ZAG ------------------------------
 // An assumption is they have the same height as in width
 
 function arrayToZigZag(arr) {
-  let stream = [], strips = ((arr.length * 2) + 1);
+  let stream = [], strips = ((arr.length * 2) - 1), x = 0, y = 0, xadd = -1, yadd = 1;
   for (let strip = 0; strip < strips; strip++) {
     let stripValuesCount = (arr.length > strip) ? (strip % arr.length) + 1 : arr.length - 1 - (strip % arr.length);
-    // for (let val = 0; val < stripValuesCount; val++) stream.push(arr[?][?]);
+    for (let val = 0; val < stripValuesCount; val++) {
+      stream.push(arr[x][y]);
+      // if go negative or off the edge, keep, else increment/decrement
+      x = (x + xadd == -1 || x + xadd > zigZagShortening(stripValuesCount, arr.length)) ? x : x + xadd;
+      y = (y + yadd == -1 || y + yadd > zigZagShortening(stripValuesCount, arr.length)) ? y : y + yadd;
+    } xadd = flip(xadd); yadd = flip(yadd);
   }
   return stream;
 }
 
-function zigZagToArray(vect, length) {
+// const zig = (x) => [for(y of[...x,...x[0]].keys())for(z of Array(y+1).keys())if(a=x[y%2?z:y-z])if(b=a[y%2?y-z:z])b];
 
+function zigZagToArray(vect) {
+  let length = Math.sqrt(vect.length), arr = make2DArray(length,length), strips = ((arr.length * 2) - 1), x = 0, y = 0, xadd = -1, yadd = 1, i = 0;
+  for (let strip = 0; strip < strips; strip++) {
+    let stripValuesCount = (arr.length > strip) ? (strip % arr.length) + 1 : arr.length - 1 - (strip % arr.length);
+    for (let val = 0; val < stripValuesCount; val++, ++i) {
+      arr[x][y] = vect[i];
+      // if go negative or off the edge, keep, else increment/decrement
+      x = (x + xadd == -1 || x + xadd > zigZagShortening(stripValuesCount, arr.length)) ? x : x + xadd;
+      y = (y + yadd == -1 || y + yadd > zigZagShortening(stripValuesCount, arr.length)) ? y : y + yadd;
+    } xadd = flip(xadd); yadd = flip(yadd);
+  }
+  return arr;
+}
+
+function zigZagShortening(valuesCount, arrLength) {
+  return (valuesCount >= (arrLength / 2)) ? valuesCount - 1 : valuesCount;
+}
+
+function flip(one) {
+  return (one == 1) ? -1 : 1;
 }
 
 // ------------------------------- OTHERS -------------------------------
