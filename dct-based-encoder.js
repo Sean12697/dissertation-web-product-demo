@@ -9,7 +9,7 @@ const signals = [
   [162, 162, 161, 161, 163, 158, 158, 158]
 ];
 
-let defaulTable = [
+const defaulTable = [
   [16, 11, 10, 16, 34, 40, 51, 61],
   [12, 12, 14, 19, 26, 58, 60, 55],
   [14, 13, 16, 24, 40, 57, 69, 56],
@@ -20,16 +20,7 @@ let defaulTable = [
   [72, 92, 95, 98, 112, 100, 103, 99]
 ];
 
-let qtable = [
-  [16, 11, 10, 16, 34, 40, 51, 61],
-  [12, 12, 14, 19, 26, 58, 60, 55],
-  [14, 13, 16, 24, 40, 57, 69, 56],
-  [14, 17, 22, 29, 51, 87, 80, 62],
-  [18, 22, 37, 56, 68, 109, 103, 77],
-  [24, 35, 55, 64, 81, 104, 113, 92],
-  [49, 64, 78, 87, 103, 121, 120, 101],
-  [72, 92, 95, 98, 112, 100, 103, 99]
-];
+let qtable = defaulTable;
 
 // ----------------------- MAIN FUNCTIONS ------------------------
 
@@ -168,42 +159,53 @@ function flattern(array) {
 // ------------------------------- ZIG ZAG ------------------------------
 // An assumption is they have the same height as in width
 
-function arrayToZigZag(arr) {
-  let stream = [], strips = ((arr.length * 2) - 1), x = 0, y = 0, xadd = -1, yadd = 1;
-  for (let strip = 0; strip < strips; strip++) {
-    let stripValuesCount = (arr.length > strip) ? (strip % arr.length) + 1 : arr.length - 1 - (strip % arr.length);
-    for (let val = 0; val < stripValuesCount; val++) {
-      stream.push(arr[x][y]);
-      // if go negative or off the edge, keep, else increment/decrement
-      x = (x + xadd == -1 || x + xadd > zigZagShortening(stripValuesCount, arr.length)) ? x : x + xadd;
-      y = (y + yadd == -1 || y + yadd > zigZagShortening(stripValuesCount, arr.length)) ? y : y + yadd;
-    } xadd = flip(xadd); yadd = flip(yadd);
-  }
-  return stream;
-}
+// JAVA : https://coding-interview-solutions.hackingnote.com/problems/matrix-zigzag-traversal.html
+function arrayToZigZag(matrix) {
+    let m = matrix.length, n = matrix[0].length, result = [], t = 0;
 
-// const zig = (x) => [for(y of[...x,...x[0]].keys())for(z of Array(y+1).keys())if(a=x[y%2?z:y-z])if(b=a[y%2?y-z:z])b];
+    for (let i = 0; i < n + m - 1; i++) {
+        if (i % 2 == 1) {
+            // down left
+            let x = i < n ? 0 : i - n + 1;
+            let y = i < n ? i : n - 1;
+            while (x < m && y >= 0) {
+                result[t++] = matrix[x++][y--];
+            }
+        } else {
+            // up right
+            let x = i < m ? i : m - 1;
+            let y = i < m ? 0 : i - m + 1;
+            while (x >= 0 && y < n) {
+                result[t++] = matrix[x--][y++];
+            }
+        }
+    }
+    return result;
+}
 
 function zigZagToArray(vect) {
-  let length = Math.sqrt(vect.length), arr = make2DArray(length,length), strips = ((arr.length * 2) - 1), x = 0, y = 0, xadd = -1, yadd = 1, i = 0;
-  for (let strip = 0; strip < strips; strip++) {
-    let stripValuesCount = (arr.length > strip) ? (strip % arr.length) + 1 : arr.length - 1 - (strip % arr.length);
-    for (let val = 0; val < stripValuesCount; val++, ++i) {
-      arr[x][y] = vect[i];
-      // if go negative or off the edge, keep, else increment/decrement
-      x = (x + xadd == -1 || x + xadd > zigZagShortening(stripValuesCount, arr.length)) ? x : x + xadd;
-      y = (y + yadd == -1 || y + yadd > zigZagShortening(stripValuesCount, arr.length)) ? y : y + yadd;
-    } xadd = flip(xadd); yadd = flip(yadd);
-  }
-  return arr;
-}
+    let length = Math.sqrt(vect.length),
+        matrix = make2DArray(length, length);
+    let m = matrix.length, n = matrix[0].length, t = 0;
 
-function zigZagShortening(valuesCount, arrLength) {
-  return (valuesCount >= (arrLength / 2)) ? valuesCount - 1 : valuesCount;
-}
-
-function flip(one) {
-  return (one == 1) ? -1 : 1;
+    for (let i = 0; i < n + m - 1; i++) {
+        if (i % 2 == 1) {
+            // down left
+            let x = i < n ? 0 : i - n + 1;
+            let y = i < n ? i : n - 1;
+            while (x < m && y >= 0) {
+                matrix[x++][y--] = vect[t++];
+            }
+        } else {
+            // up right
+            let x = i < m ? i : m - 1;
+            let y = i < m ? 0 : i - m + 1;
+            while (x >= 0 && y < n) {
+                matrix[x--][y++] = vect[t++];
+            }
+        }
+    }
+    return matrix;
 }
 
 // ------------------------------- OTHERS -------------------------------

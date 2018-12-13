@@ -1,17 +1,30 @@
-let encoded = [];
+let encoded = [], scalesArray = [];
 
 window.addEventListener('DOMContentLoaded', () => {
-    let quantized = encode(signals, qtable);
-    let reconstructed = decode(quantized, qtable);
-
-    drawOnCanvas(signals, "before", greyToHex);
-    drawOnCanvas(qtable, "table", (i) => `rgba(${i},${i},${i},0.6)`);
-    drawOnCanvas(reconstructed, "after", greyToHex);
+    scalesArray = apsc(document.getElementsByClassName('scale'));
+    renderTables();
 
     addImage("lenna.png", "cnvsLennaBefore");
+    
     document.getElementById("generate").addEventListener('click', () => encodeDecodeToCanvas(document.getElementById("cnvsLennaBefore"), "cnvsLennaAfter"));
+    
+    scalesArray.forEach((x, i) => { 
+        x.addEventListener('change', () => {
+            let tableStream = arrayToZigZag(defaulTable), bit = Math.round(tableStream.length / 3) + 1;
+            let modified = tableStream.map((v, j) => Math.round(scalesArray[Math.floor(j/bit)].value * v));
+            qtable = zigZagToArray(modified);
+            renderTables();
+        });
+    });
+    
     fileUploadListener();
 });
+
+function renderTables() {
+    drawOnCanvas(signals, "before", greyToHex);
+    drawOnCanvas(qtable, "table", (i) => `rgba(${i},${i},${i},0.6)`);
+    drawOnCanvas(decode(encode(signals, qtable), qtable), "after", greyToHex);
+}
 
 // https://stackoverflow.com/questions/22087076/how-to-make-a-simple-image-upload-using-javascript-html
 function fileUploadListener() {
@@ -53,6 +66,7 @@ function streamToCanvas(canvasID, stream, width, height) {
     let after = document.getElementById(canvasID);
     after.width = width;
     after.height = height;
+    after.getContext('2d').clearRect(0, 0, after.width, after.height);
     after.getContext('2d').putImageData(new ImageData(stream, width, height), 0, 0, 0, 0, width, height);
 }
 
@@ -61,7 +75,9 @@ function setMetaText(text) {
 }
 
 function drawOnCanvas(arr, cnvs, background) {
-    let ctx = document.getElementById(cnvs).getContext("2d");
+    let canvas = document.getElementById(cnvs);
+    let ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.font = "18px Arial";
     arr.forEach((x, i) => {
         x.forEach((y, j) => {
@@ -71,6 +87,10 @@ function drawOnCanvas(arr, cnvs, background) {
             ctx.fillText(y, j * 50 + 2, i * 50 + 18);
         });
     });
+}
+
+function apsc(e) { 
+    return Array.prototype.slice.call(e) 
 }
 
 function greyToHex(grey) {

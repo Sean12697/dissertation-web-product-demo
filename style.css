@@ -34,6 +34,10 @@ canvas {
     margin: 8px;
 }
 
+input[type="range"] {
+    width: 100%;
+}
+
 /* LOAD SPINNER */
 
 .loader {
