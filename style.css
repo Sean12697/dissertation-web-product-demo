@@ -25,6 +25,10 @@ canvas {
     height: 80%;
 }
 
+button {
+    margin: 8px;
+}
+
 #scales div {
     display: inline-block;
     width: 30%;

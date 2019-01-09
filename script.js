@@ -7,11 +7,15 @@ window.addEventListener('DOMContentLoaded', () => {
     addImage("lenna.png", "cnvsLennaBefore");
     
     document.getElementById("generate").addEventListener('click', () => encodeDecodeToCanvas(document.getElementById("cnvsLennaBefore"), "cnvsLennaAfter"));
+    document.getElementById("default").addEventListener('click', () => {
+        qtable = defaulTable;
+        renderTables();
+    });
     
     scalesArray.forEach((x, i) => { 
         x.addEventListener('change', () => {
             let tableStream = arrayToZigZag(defaulTable), bit = Math.round(tableStream.length / 3) + 1;
-            let modified = tableStream.map((v, j) => Math.round(scalesArray[Math.floor(j/bit)].value * v));
+            let modified = tableStream.map((v, j) => Math.round(scalesArray[Math.floor(j/bit)].value * 254) + 1);
             qtable = zigZagToArray(modified);
             renderTables();
         });
