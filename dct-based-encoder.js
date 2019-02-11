@@ -88,11 +88,27 @@ function RGBArrayToStream(array) {
 }
 
 function encodeRGBA(array) {
-  return array.map(colourSpace => applyToArray(colourSpace, encode, array[0].length, array[0][0].length));
+  array = advRGB(array);
+  let applied = applyToArray(array[0], encode, array[0].length, array[0][0].length);
+  return array.map((colourSpace, i) =>  (i!=3) ? applied : colourSpace );
+  // return array.map(colourSpace => applyToArray(colourSpace, encode, array[0].length, array[0][0].length));
+}
+
+function advRGB(rgbarray) {
+  for (let i = 0; i < rgbarray[0].length; i++) {
+    for (let j = 0; j < rgbarray[0][0].length; j++) {
+      let sum = 0;
+      for (let c = 0; c < 3; c++) sum += rgbarray[c][i][j];
+      sum = sum / 3;
+      for (let c = 0; c < 3; c++) rgbarray[c][i][j] = sum;
+    }
+  } return rgbarray;
 }
 
 function decodeRGBA(array) {
-  return array.map(colourSpace => applyToArray(colourSpace, decode, array[0].length, array[0][0].length));
+  let applied = applyToArray(array[0], decode, array[0].length, array[0][0].length);
+  return array.map((colourSpace, i) =>  (i!=3) ? applied : colourSpace );
+ // return array.map(colourSpace => applyToArray(colourSpace, decode, array[0].length, array[0][0].length));
 }
 
 function applyToArray(array, func, width, height) {

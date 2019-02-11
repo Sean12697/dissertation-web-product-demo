@@ -1,26 +1,28 @@
-let encoded = [], scalesArray = [];
+let encoded = [],
+    scalesArray = [];
 
 window.addEventListener('DOMContentLoaded', () => {
     scalesArray = apsc(document.getElementsByClassName('scale'));
     renderTables();
 
     addImage("lenna.png", "cnvsLennaBefore");
-    
+
     document.getElementById("generate").addEventListener('click', () => encodeDecodeToCanvas(document.getElementById("cnvsLennaBefore"), "cnvsLennaAfter"));
     document.getElementById("default").addEventListener('click', () => {
         qtable = defaulTable;
         renderTables();
     });
-    
-    scalesArray.forEach((x, i) => { 
+
+    scalesArray.forEach((x, i) => {
         x.addEventListener('change', () => {
-            let tableStream = arrayToZigZag(defaulTable), bit = Math.round(tableStream.length / 3) + 1;
-            let modified = tableStream.map((v, j) => Math.round(scalesArray[Math.floor(j/bit)].value * 254) + 1);
+            let tableStream = arrayToZigZag(defaulTable),
+                bit = Math.round(tableStream.length / 3) + 1;
+            let modified = tableStream.map((v, j) => Math.round(scalesArray[Math.floor(j / bit)].value * 254) + 1);
             qtable = zigZagToArray(modified);
             renderTables();
         });
     });
-    
+
     fileUploadListener();
 });
 
@@ -32,7 +34,7 @@ function renderTables() {
 
 // https://stackoverflow.com/questions/22087076/how-to-make-a-simple-image-upload-using-javascript-html
 function fileUploadListener() {
-    document.querySelector('input[type="file"]').addEventListener('change', function() {
+    document.querySelector('input[type="file"]').addEventListener('change', function () {
         if (this.files && this.files[0]) {
             addImage(URL.createObjectURL(this.files[0]), "cnvsLennaBefore");
         }
@@ -45,31 +47,51 @@ function addImage(image, cnvs) {
     img.src = image;
     img.onload = () => {
         let canvas = document.getElementById(cnvs);
-        canvas.width = img.width;
-        canvas.height = img.width;
-        canvas.getContext('2d').drawImage(img, 0, 0);
+        let MAX_WIDTH = 512, MAX_HEIGHT = 512, width = img.width, height = img.height;
+
+        // Downscaling if necessary
+        // https://codepen.io/tuanitpro/pen/wJZJbp
+        if (width > height) {
+            if (width > MAX_WIDTH) {
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
+            }
+        } else {
+            if (height > MAX_HEIGHT) {
+                width *= MAX_HEIGHT / height;
+                height = MAX_HEIGHT;
+            }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+
         encodeDecodeToCanvas(canvas, "cnvsLennaAfter");
-     };
+    };
 }
 
 function encodeDecodeToCanvas(originalCanvas, afterCanvas) {
-    let encodeDecodeResults = encodeDecode(originalCanvas);
-    setMetaText(`You compressed ${encodeDecodeResults[1]} of the image, being ${formatBytes(encodeDecodeResults[2])} of the original ${formatBytes(encodeDecodeResults[3])}`);
-    streamToCanvas(afterCanvas, encodeDecodeResults[0], originalCanvas.width, originalCanvas.width);
+    encodeDecode(originalCanvas).then(encodeDecodeResults => {
+        setMetaText(`You compressed ${encodeDecodeResults[1]} of the image, being ${formatBytes(encodeDecodeResults[2])} of the original ${formatBytes(encodeDecodeResults[3])}`);
+        streamToCanvas(afterCanvas, encodeDecodeResults[0], originalCanvas.width, originalCanvas.height);
+    });
 }
 
-function encodeDecode(originalCanvas) {
+async function encodeDecode(originalCanvas) {
     encoded = encodeCanvasImage(originalCanvas);
     let cr = compressionRatio(encoded);
     let decoded = decodeRGBA(encoded);
     let data = new Uint8ClampedArray(RGBArrayToStream(decoded));
-    return [data, cr[0], cr[1], cr[2]]; // rgba stream, compressed ratio, after size, original size
+    return Promise.resolve([data, cr[0], cr[1], cr[2]]); // rgba stream, compressed ratio, after size, original size
 }
 
 function streamToCanvas(canvasID, stream, width, height) {
     let after = document.getElementById(canvasID);
+    
     after.width = width;
     after.height = height;
+
     after.getContext('2d').clearRect(0, 0, after.width, after.height);
     after.getContext('2d').putImageData(new ImageData(stream, width, height), 0, 0, 0, 0, width, height);
 }
@@ -93,8 +115,8 @@ function drawOnCanvas(arr, cnvs, background) {
     });
 }
 
-function apsc(e) { 
-    return Array.prototype.slice.call(e) 
+function apsc(e) {
+    return Array.prototype.slice.call(e);
 }
 
 function greyToHex(grey) {
