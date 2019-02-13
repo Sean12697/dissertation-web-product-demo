@@ -62,12 +62,12 @@ function decodeWithTable(quantized, qtable) {
 
 // ----------------------- IMAGE FUNCTIONS ------------------------
 
-async function encodeCanvasImage(canvas) {
+function encodeCanvasImage(canvas) {
   let width = canvas.width;
   let height = canvas.height;
   let ctx = canvas.getContext('2d');
   let stream = ctx.getImageData(0, 0, width, height).data;
-  return Promise.resolve(encodeRGBA(streamToRGBArray(stream, width, height)));
+  return encodeRGBA(streamToRGBArray(stream, width, height));
 }
 
 function streamToRGBArray(stream, width, height) {
@@ -87,15 +87,11 @@ function RGBArrayToStream(array) {
   return temp;
 }
 
-// Async RGB
-// https://flaviocopes.com/javascript-async-await-array-map/
-
-async function encodeRGBA(array) {
-  // array = advRGB(array);
-  // let applied = applyToArray(array[0], encode, array[0].length, array[0][0].length);
-  // return array.map((colourSpace, i) =>  (i!=3) ? applied : colourSpace );
-  return await Promise.all(array.map(colourSpace => asyncApplyToArray(colourSpace, encode, array[0].length, array[0][0].length)));
-  // return array.map(codecodeRGBAlourSpace => applyToArray(colourSpace, encode, array[0].length, array[0][0].length));
+function encodeRGBA(array) {
+  array = advRGB(array);
+  let applied = applyToArray(array[0], encode, array[0].length, array[0][0].length);
+  return array.map((colourSpace, i) =>  (i!=3) ? applied : colourSpace );
+  // return array.map(colourSpace => applyToArray(colourSpace, encode, array[0].length, array[0][0].length));
 }
 
 function advRGB(rgbarray) {
@@ -109,15 +105,10 @@ function advRGB(rgbarray) {
   } return rgbarray;
 }
 
-async function decodeRGBA(array) {
-  // let applied = applyToArray(array[0], decode, array[0].length, array[0][0].length);
-  // return array.map((colourSpace, i) =>  (i!=3) ? applied : colourSpace );
-  return await Promise.all(array.map(colourSpace => asyncApplyToArray(colourSpace, decode, array[0].length, array[0][0].length)));
-  // return array.map(colourSpace => applyToArray(colourSpace, decode, array[0].length, array[0][0].length));
-}
-
-async function asyncApplyToArray(array, func, width, height) {
-  return await applyToArray(array, func, width, height);
+function decodeRGBA(array) {
+  let applied = applyToArray(array[0], decode, array[0].length, array[0][0].length);
+  return array.map((colourSpace, i) =>  (i!=3) ? applied : colourSpace );
+ // return array.map(colourSpace => applyToArray(colourSpace, decode, array[0].length, array[0][0].length));
 }
 
 function applyToArray(array, func, width, height) {
@@ -125,7 +116,7 @@ function applyToArray(array, func, width, height) {
     for (let j = 0; j < Math.floor(height / 8); j++) {
       array = applyToArrayBlock(array, i*8, j*8, func, 8, 8)
     }
-  } return Promise.resolve(array);
+  } return array;
 }
 
 function applyToArrayBlock(array, x, y, func, xlen, ylen) {
