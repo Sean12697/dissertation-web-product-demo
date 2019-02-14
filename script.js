@@ -8,6 +8,12 @@ window.addEventListener('DOMContentLoaded', () => {
     addImage("lenna.png", "cnvsLennaBefore");
 
     document.getElementById("generate").addEventListener('click', () => encodeDecodeToCanvas(document.getElementById("cnvsLennaBefore"), "cnvsLennaAfter"));
+    document.getElementById("copy").addEventListener('click', () => {
+        let copyText = document.getElementById("txtTable");
+        copyText.select();
+        document.execCommand("copy");
+        alert("Copied the array: " + copyText.value);
+    });
     document.getElementById("default").addEventListener('click', () => {
         qtable = defaulTable;
         renderTables();
@@ -16,7 +22,7 @@ window.addEventListener('DOMContentLoaded', () => {
     scalesArray.forEach((x, i) => {
         x.addEventListener('change', () => {
             let tableStream = arrayToZigZag(defaulTable),
-                bit = Math.round(tableStream.length / 3) + 1;
+                bit = Math.round(tableStream.length / scalesArray.length) + 1;
             let modified = tableStream.map((v, j) => Math.round(scalesArray[Math.floor(j / bit)].value * 254) + 1);
             qtable = zigZagToArray(modified);
             renderTables();
@@ -27,10 +33,11 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 function renderTables() {
-    drawOnCanvas(signals, "before", greyToHex);
+    // drawOnCanvas(signals, "before", greyToHex);
     drawOnCanvas(qtable, "table", (i) => `rgba(${i},${i},${i},0.6)`);
-    console.log(encode(signals, qtable))
-    drawOnCanvas(decode(encode(signals, qtable), qtable), "after", greyToHex);
+    document.getElementById("txtTable").value = `[ ${qtable.map(line => '[' + line.toString() + ']').toString()} ]`;
+    // console.log(encode(signals, qtable))
+    // drawOnCanvas(decode(encode(signals, qtable), qtable), "after", greyToHex);
 }
 
 // https://stackoverflow.com/questions/22087076/how-to-make-a-simple-image-upload-using-javascript-html
@@ -74,7 +81,7 @@ function addImage(image, cnvs) {
 
 function encodeDecodeToCanvas(originalCanvas, afterCanvas) {
     encodeDecode(originalCanvas).then(encodeDecodeResults => {
-        setMetaText(`You compressed ${encodeDecodeResults[1]} of the image, being ${formatBytes(encodeDecodeResults[2])} of the original ${formatBytes(encodeDecodeResults[3])}`);
+        setMetaText(`You compressed ${encodeDecodeResults[1]}% of the image, being ${formatBytes(encodeDecodeResults[2])} of the original ${formatBytes(encodeDecodeResults[3])} channel data.`);
         streamToCanvas(afterCanvas, encodeDecodeResults[0], originalCanvas.width, originalCanvas.height);
     });
 }

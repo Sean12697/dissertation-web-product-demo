@@ -11,34 +11,33 @@
 </head>
 <body>
     <h1>Personalised JPEG Quantization Table</h1>
+    <p id="explanation">Part of the JPEG image format standard includes a "Quantization Table", this helps compress an image by going over each 8*8 block in a given image with it. Below is the table often used based on psycho-visual experiments, but by using the sliders next to the table, you can manipulate it to compress the image how you deem fit, then click the <b>Quantize</b> button to see the results.</p>
     <article>
         <section><h2>Before</h2></section>
         <section><h2>Quantize</h2></section>
         <section><h2>After</h2></section>
     </article>
     <article>
-        <section><canvas id="before" width="400px" height="400px"></canvas></section>
-        <section>
-            <button id="default">Default Table</button>
-            <div id="scales">
-                <div><input type="range" id="low" class="scale" min="0" max="1" step="0.05" defaultValue="0.5"><p>Low</p></div>
-                <div><input type="range" id="mid" class="scale" min="0" max="1" step="0.05" defaultValue="0.5"><p>Mid</p></div>
-                <div><input type="range" id="high" class="scale" min="0" max="1" step="0.05" defaultValue="0.5"><p>High</p></div>
-            </div>
-            <canvas id="table" width="400px" height="400px"></canvas>
-            <div id="generateElements">
-                <button id="generate">Quantize</button>
-            </div>
-        </section>
-        <section><canvas id="after" width="400px" height="400px"></canvas></section>
-    </article>
-    <article>
         <section><canvas id="cnvsLennaBefore"></canvas></section>
         <section>
+                <canvas id="table" width="400px" height="400px"></canvas>
+                <div id="scales">
+                    <div><p>Low</p><input type="range" id="low" class="scale" min="0" max="1" step="0.05" defaultValue="0.5"></div>
+                    <div><p>Low-Mid</p><input type="range" id="low-mid" class="scale" min="0" max="1" step="0.05" defaultValue="0.5"></div>
+                    <div><p>Mid</p><input type="range" id="mid" class="scale" min="0" max="1" step="0.05" defaultValue="0.5"></div>
+                    <div><p>Mid-High</p><input type="range" id="mid-high" class="scale" min="0" max="1" step="0.05" defaultValue="0.5"></div>
+                    <div><p>High</p><input type="range" id="high" class="scale" min="0" max="1" step="0.05" defaultValue="0.5"></div>
+                </div>
+                <input id="txtTable" type="text" disabled>
+                <div id="generateElements">
+                    <button id="default">Use Default Table</button>
+                    <button id="generate">Quantize</button>
+                    <button id="copy">Copy Table Array</button>
+                </div>
             <div id="meta">
                 <div class="loader"></div>
             </div>
-            <input type='file'/>
+            <p id="txtUpload">Upload your own photo: </p><input type='file'/>
         </section>
         <section><canvas id="cnvsLennaAfter"></canvas></section>
     </article>

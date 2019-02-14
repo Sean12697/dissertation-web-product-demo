@@ -143,9 +143,9 @@ function setArrayBlock(array, block, x, y, xlen, ylen) {
 // -------------------------- COMPRESSION ---------------------------
 
 function compressionRatio(encoded) {
-  let length = RGBArrayToStream(encoded).length;
-  let lengthAfterCompressed = compressedRGBASize(encoded);
-  return [`${100-Math.round((lengthAfterCompressed/length)*100)}%`, lengthAfterCompressed, length];
+  let length = encoded[0].length * encoded[0][0].length; // RGBArrayToStream(encoded).length;
+  let lengthAfterCompressed = compressedArraySize(encoded[0]); // compressedRGBASize(encoded);
+  return [(100-Math.round((lengthAfterCompressed/length)*100)), lengthAfterCompressed, length];
 }
 
 function compressedRGBASize(array) {

@@ -3,46 +3,75 @@ body {
     vertical-align: top;
 }
 
+#explanation {
+   padding: 5px 10%;
+}
+
 article {
     width: 100%;
 }
 
 article section {
     width: calc(30% - 20px);
-    padding: 20px; 
+    padding: 5px 20px; 
     display: inline-block;
     max-height: 300px;
+    vertical-align: top;
 }
 
 canvas {
     display: inline-block;
     width: 100%;
     height: 100%;
-    max-width: 350px;
-    max-height: 350px;
+    max-width: 400px;
+    max-height: 400px;
 }
 
 #table {
-    width: 80%;
-    height: 80%;
+    width: 50%;
+    height: 50%;
+}
+
+#table, #scales {
+    display: inline-block;
+    margin: 2%;
+    vertical-align: middle;
+}
+
+#scales {
+    width: 33%;
+}
+
+#meta {
+    margin: 15px 2px;
 }
 
 button {
     margin: 8px;
 }
 
-#scales div {
-    display: inline-block;
-    width: 30%;
+#scales div p {
+    margin: 5px;
 }
 
-#scales div p {
-    margin: 8px;
+#txtTable {
+    width: 80%;
+}
+
+#txtUpload, input[type="file"] {
+    display: inline-block;
+    margin-right: 10px;
 }
 
 input[type="range"] {
     width: 100%;
 }
+
+/* #generate {
+    background-color: rgba(0,0,0,0);
+    border: 2px solid rgb(109, 109, 109);
+    padding: 6px;
+} */
 
 /* LOAD SPINNER */
 
