@@ -108,7 +108,7 @@ function advRGB(rgbarray) {
 function decodeRGBA(array) {
   let applied = applyToArray(array[0], decode, array[0].length, array[0][0].length);
   return array.map((colourSpace, i) =>  (i!=3) ? applied : colourSpace );
- // return array.map(colourSpace => applyToArray(colourSpace, decode, array[0].length, array[0][0].length));
+  //  return array.map(colourSpace => applyToArray(colourSpace, decode, array[0].length, array[0][0].length));
 }
 
 function applyToArray(array, func, width, height) {

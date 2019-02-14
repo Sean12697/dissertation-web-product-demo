@@ -29,6 +29,7 @@ window.addEventListener('DOMContentLoaded', () => {
 function renderTables() {
     drawOnCanvas(signals, "before", greyToHex);
     drawOnCanvas(qtable, "table", (i) => `rgba(${i},${i},${i},0.6)`);
+    console.log(encode(signals, qtable))
     drawOnCanvas(decode(encode(signals, qtable), qtable), "after", greyToHex);
 }
 
@@ -47,10 +48,7 @@ function addImage(image, cnvs) {
     img.src = image;
     img.onload = () => {
         let canvas = document.getElementById(cnvs);
-        let MAX_WIDTH = 512,
-            MAX_HEIGHT = 512,
-            width = img.width,
-            height = img.height;
+        let MAX_WIDTH = 512, MAX_HEIGHT = 512, width = img.width, height = img.height;
 
         // Downscaling if necessary
         // https://codepen.io/tuanitpro/pen/wJZJbp
@@ -82,18 +80,16 @@ function encodeDecodeToCanvas(originalCanvas, afterCanvas) {
 }
 
 async function encodeDecode(originalCanvas) {
-    return encodeCanvasImage(originalCanvas).then(encoded => {
-        let cr = compressionRatio(encoded);
-        return decodeRGBA(encoded).then(decoded => {
-            let data = new Uint8ClampedArray(RGBArrayToStream(decoded));
-            return Promise.resolve([data, cr[0], cr[1], cr[2]]); // rgba stream, compressed ratio, after size, original size
-        });
-    });
+    encoded = encodeCanvasImage(originalCanvas);
+    let cr = compressionRatio(encoded);
+    let decoded = decodeRGBA(encoded);
+    let data = new Uint8ClampedArray(RGBArrayToStream(decoded));
+    return Promise.resolve([data, cr[0], cr[1], cr[2]]); // rgba stream, compressed ratio, after size, original size
 }
 
 function streamToCanvas(canvasID, stream, width, height) {
     let after = document.getElementById(canvasID);
-
+    
     after.width = width;
     after.height = height;
 
