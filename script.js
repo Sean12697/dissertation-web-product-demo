@@ -12,7 +12,7 @@ window.addEventListener('DOMContentLoaded', () => {
         let copyText = document.getElementById("txtTable");
         copyText.select();
         document.execCommand("copy");
-        alert("Copied the array: " + copyText.value);
+        // alert("Copied the array: " + copyText.value);
     });
     document.getElementById("default").addEventListener('click', () => {
         qtable = defaulTable;
