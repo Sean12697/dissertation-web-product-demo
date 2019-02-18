@@ -3,9 +3,25 @@ let encoded = [],
 
 window.addEventListener('DOMContentLoaded', () => {
     scalesArray = apsc(document.getElementsByClassName('scale'));
+    scalesMatchArray();
     renderTables();
 
     addImage("lenna.png", "cnvsLennaBefore");
+
+    document.getElementById("cnvsLennaBefore").addEventListener("click", e => {
+        console.log(e)
+        // let x = e.clientX - document.getElementById("cnvsLennaBefore").offsetLeft,
+        //     y = e.clientY - document.getElementById("cnvsLennaBefore").offsetTop,
+        //     before = document.getElementById("cnvsLennaBefore"),
+        //     beforeCtx = before.getContext("2d"),
+        //     beforeSnippet = document.getElementById("cnvsBeforeSnippet"),
+        //     beforeSnippetCtx = beforeSnippet.getContext("2d"),
+        //     snippet = beforeCtx.getImageData(x, y, 8, 8);
+
+        // beforeCtx.fillRect(x, y, 8, 8);
+        // beforeSnippetCtx.putImageData(snippet, 0, 0);
+        // beforeSnippetCtx.drawImage(beforeSnippet, 0, 0, beforeSnippet.width, beforeSnippet.height);
+    });
 
     document.getElementById("generate").addEventListener('click', () => encodeDecodeToCanvas(document.getElementById("cnvsLennaBefore"), "cnvsLennaAfter"));
     document.getElementById("copy").addEventListener('click', () => {
@@ -16,6 +32,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById("default").addEventListener('click', () => {
         qtable = defaulTable;
+        scalesMatchArray();
         renderTables();
     });
 
@@ -31,6 +48,21 @@ window.addEventListener('DOMContentLoaded', () => {
 
     fileUploadListener();
 });
+
+// https://stackoverflow.com/questions/14224535/scaling-between-two-number-ranges
+function convertRange(value, r1, r2) {
+    return (value - r1[0]) * (r2[1] - r2[0]) / (r1[1] - r1[0]) + r2[0];
+}
+
+// added UX for reset to default table
+function scalesMatchArray() {
+    scalesArray.forEach((x, i) => {
+        let tableStream = arrayToZigZag(qtable),
+            bits = Math.round(tableStream.length / scalesArray.length) + 1,
+            averageInSteamPart = tableStream.reduce((total, currentValue, currentIndex) => (currentIndex > (i * bits) && currentIndex < ((i + 1) * bits)) ? total + currentValue : total, 0) / bits;
+        x.value = convertRange(averageInSteamPart, [0, 255], [0, 1]);
+    });
+}
 
 function renderTables() {
     // drawOnCanvas(signals, "before", greyToHex);
@@ -55,7 +87,10 @@ function addImage(image, cnvs) {
     img.src = image;
     img.onload = () => {
         let canvas = document.getElementById(cnvs);
-        let MAX_WIDTH = 512, MAX_HEIGHT = 512, width = img.width, height = img.height;
+        let MAX_WIDTH = 512,
+            MAX_HEIGHT = 512,
+            width = img.width,
+            height = img.height;
 
         // Downscaling if necessary
         // https://codepen.io/tuanitpro/pen/wJZJbp
@@ -96,7 +131,7 @@ async function encodeDecode(originalCanvas) {
 
 function streamToCanvas(canvasID, stream, width, height) {
     let after = document.getElementById(canvasID);
-    
+
     after.width = width;
     after.height = height;
 
