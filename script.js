@@ -8,23 +8,17 @@ window.addEventListener('DOMContentLoaded', () => {
 
     addImage("lenna.png", "cnvsLennaBefore");
 
-    // TESTIN
-    document.getElementById("cnvsLennaBefore").addEventListener("click", e => {
-        // https://stackoverflow.com/questions/43172115/get-the-mouse-coordinates-when-clicking-on-canvas
-        // https://stackoverflow.com/questions/55677/how-do-i-get-the-coordinates-of-a-mouse-click-on-a-canvas-element ??
-        console.log(e) // x/y incorrect
-        let x = e.x - document.getElementById("cnvsLennaBefore").offsetLeft,
-            y = e.y - document.getElementById("cnvsLennaBefore").offsetTop,
-            before = document.getElementById("cnvsLennaBefore"),
-            beforeCtx = before.getContext("2d"),
-            beforeSnippet = document.getElementById("cnvsBeforeSnippet"),
-            beforeSnippetCtx = beforeSnippet.getContext("2d"),
-            snippet = beforeCtx.getImageData(x, y, 8, 8); // getting pixels of where clicked
+    document.getElementById("cnvsLennaBefore").addEventListener("mouseup", e => {
+        let canvas = document.getElementById("cnvsLennaBefore"), canvasSnippet = document.getElementById("cnvsBeforeSnippet");
+        let x = e.offsetX * (canvas.width / canvas.clientWidth), y = e.offsetY * (canvas.height / canvas.clientHeight);
+        let canvasCtx = canvas.getContext("2d"), canvasSnippetCtx = canvasSnippet.getContext("2d");
+        let snippet = canvasCtx.getImageData(x, y, 8, 8); // getting pixels of where clicked
 
-        beforeCtx.fillRect(x, y, 8, 8); // filling in black
-        beforeSnippetCtx.putImageData(snippet, 0, 0); // filling in new c// filling in canvas
-        beforeSnippetCtx.drawImage(beforeSnippet, 0, 0, beforeSnippet.width, beforeSnippet.height);
-    }); // TESTIN
+        canvasCtx.fillRect(x, y, 8, 8); // filling in black
+        console.log(snippet)
+        canvasSnippetCtx.putImageData(snippet, 0, 0); // filling in new c// filling in canvas
+        // canvasSnippetCtx.drawImage(canvasSnippet, 0, 0, canvasSnippet.width, canvasSnippet.height);
+    });
 
     document.getElementById("generate").addEventListener('click', () => encodeDecodeToCanvas(document.getElementById("cnvsLennaBefore"), "cnvsLennaAfter"));
     document.getElementById("copy").addEventListener('click', () => {

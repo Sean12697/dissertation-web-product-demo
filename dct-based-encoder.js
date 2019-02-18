@@ -18,7 +18,7 @@ const defaulTable = [
   [24, 35, 55, 64, 81, 104, 113, 92],
   [49, 64, 78, 87, 103, 121, 120, 101],
   [72, 92, 95, 98, 112, 100, 103, 99]
-]; 
+];
 
 let qtable = defaulTable;
 
@@ -71,27 +71,41 @@ function encodeCanvasImage(canvas) {
 }
 
 function streamToRGBArray(stream, width, height) {
-  let rgba = [[],[],[],[]], rgbaCompressed = [[],[],[],[]];
+  let rgba = [
+      [],
+      [],
+      [],
+      []
+    ],
+    rgbaCompressed = [
+      [],
+      [],
+      [],
+      []
+    ];
   // Getting colour spaces in different arrays
   stream.forEach((pix, i) => rgba[i % 4].push(pix));
   // converting those 1d colour arrays to 2d arrays
   rgbaCompressed = rgbaCompressed.map(arr => make2DArray(height, width));
-  rgba.forEach((carr, csi) => carr.forEach((pix, index) => rgbaCompressed[csi][Math.floor(index/width)].push(pix)));
+  rgba.forEach((carr, csi) => carr.forEach((pix, index) => rgbaCompressed[csi][Math.floor(index / width)].push(pix)));
   return rgbaCompressed.map(arr => arr.map(lines => lines.filter(el => el != null)));
 }
 
 function RGBArrayToStream(array) {
   let temp = new Array();
   array = array.map(colour => [].concat.apply([], colour));
-  for (let i = 0; i < array.length * array[0].length; i++) temp.push(array[i%4][Math.floor(i/4)]);
+  for (let i = 0; i < array.length * array[0].length; i++) temp.push(array[i % 4][Math.floor(i / 4)]);
   return temp;
 }
 
 function encodeRGBA(array) {
-  array = advRGB(array);
-  let applied = applyToArray(array[0], encode, array[0].length, array[0][0].length);
-  return array.map((colourSpace, i) =>  (i!=3) ? applied : colourSpace );
-  // return array.map(colourSpace => applyToArray(colourSpace, encode, array[0].length, array[0][0].length));
+  if (array[0].length > 8) { // if large, use one channel
+    array = advRGB(array);
+    let applied = applyToArray(array[0], encode, array[0].length, array[0][0].length);
+    return array.map((colourSpace, i) => (i != 3) ? applied : colourSpace);
+  } else {
+    return array.map(colourSpace => applyToArray(colourSpace, encode, array[0].length, array[0][0].length));
+  }
 }
 
 function advRGB(rgbarray) {
@@ -102,21 +116,26 @@ function advRGB(rgbarray) {
       sum = sum / 3;
       for (let c = 0; c < 3; c++) rgbarray[c][i][j] = sum;
     }
-  } return rgbarray;
+  }
+  return rgbarray;
 }
 
 function decodeRGBA(array) {
-  let applied = applyToArray(array[0], decode, array[0].length, array[0][0].length);
-  return array.map((colourSpace, i) =>  (i!=3) ? applied : colourSpace );
-  //  return array.map(colourSpace => applyToArray(colourSpace, decode, array[0].length, array[0][0].length));
+  if (array[0].length > 8) { // if large, use one channel
+    let applied = applyToArray(array[0], decode, array[0].length, array[0][0].length);
+    return array.map((colourSpace, i) => (i != 3) ? applied : colourSpace);
+  } else {
+    return array.map(colourSpace => applyToArray(colourSpace, decode, array[0].length, array[0][0].length));
+  }
 }
 
 function applyToArray(array, func, width, height) {
   for (let i = 0; i < Math.floor(width / 8); i++) {
     for (let j = 0; j < Math.floor(height / 8); j++) {
-      array = applyToArrayBlock(array, i*8, j*8, func, 8, 8)
+      array = applyToArrayBlock(array, i * 8, j * 8, func, 8, 8)
     }
-  } return array;
+  }
+  return array;
 }
 
 function applyToArrayBlock(array, x, y, func, xlen, ylen) {
@@ -129,15 +148,17 @@ function getArrayBlock(array, x, y, xlen, ylen) {
     for (let j = y, yj = 0; j < y + ylen; j++, yj++) {
       block[xi][yj] = array[i][j];
     }
-  } return block;
+  }
+  return block;
 }
 
 function setArrayBlock(array, block, x, y, xlen, ylen) {
   for (let i = x, xi = 0; i < x + xlen; i++, xi++) {
     for (let j = y, yj = 0; j < y + ylen; j++, yj++) {
-      array[i][j]= block[xi][yj];
+      array[i][j] = block[xi][yj];
     }
-  } return array;
+  }
+  return array;
 }
 
 // -------------------------- COMPRESSION ---------------------------
@@ -145,7 +166,7 @@ function setArrayBlock(array, block, x, y, xlen, ylen) {
 function compressionRatio(encoded) {
   let length = encoded[0].length * encoded[0][0].length; // RGBArrayToStream(encoded).length;
   let lengthAfterCompressed = compressedArraySize(encoded[0]); // compressedRGBASize(encoded);
-  return [(100-Math.round((lengthAfterCompressed/length)*100)), lengthAfterCompressed, length];
+  return [(100 - Math.round((lengthAfterCompressed / length) * 100)), lengthAfterCompressed, length];
 }
 
 function compressedRGBASize(array) {
@@ -158,14 +179,15 @@ function compressedArraySize(array) {
   for (let i = 0; i < Math.floor(array.length / 8); i++) {
     for (let j = 0; j < Math.floor(array[0].length / 8); j++) {
       // each block
-      let block = getArrayBlock(array, i*8, j*8, 8, 8);
+      let block = getArrayBlock(array, i * 8, j * 8, 8, 8);
       size += compressStream(flattern(block)).length;
     }
-  } return size;
+  }
+  return size;
 }
 
 function compressStream(stream) { // if 0 and previous element was 0, do not keep
-  return stream.filter((val, idx, arr) => (val == 0 && idx != 0) ? (arr[idx-1] == 0) ? false : true : true);
+  return stream.filter((val, idx, arr) => (val == 0 && idx != 0) ? (arr[idx - 1] == 0) ? false : true : true);
 }
 
 function flattern(array) {
@@ -177,51 +199,56 @@ function flattern(array) {
 
 // JAVA : https://coding-interview-solutions.hackingnote.com/problems/matrix-zigzag-traversal.html
 function arrayToZigZag(matrix) {
-    let m = matrix.length, n = matrix[0].length, result = [], t = 0;
+  let m = matrix.length,
+    n = matrix[0].length,
+    result = [],
+    t = 0;
 
-    for (let i = 0; i < n + m - 1; i++) {
-        if (i % 2 == 1) {
-            // down left
-            let x = i < n ? 0 : i - n + 1;
-            let y = i < n ? i : n - 1;
-            while (x < m && y >= 0) {
-                result[t++] = matrix[x++][y--];
-            }
-        } else {
-            // up right
-            let x = i < m ? i : m - 1;
-            let y = i < m ? 0 : i - m + 1;
-            while (x >= 0 && y < n) {
-                result[t++] = matrix[x--][y++];
-            }
-        }
+  for (let i = 0; i < n + m - 1; i++) {
+    if (i % 2 == 1) {
+      // down left
+      let x = i < n ? 0 : i - n + 1;
+      let y = i < n ? i : n - 1;
+      while (x < m && y >= 0) {
+        result[t++] = matrix[x++][y--];
+      }
+    } else {
+      // up right
+      let x = i < m ? i : m - 1;
+      let y = i < m ? 0 : i - m + 1;
+      while (x >= 0 && y < n) {
+        result[t++] = matrix[x--][y++];
+      }
     }
-    return result;
+  }
+  return result;
 }
 
 function zigZagToArray(vect) {
-    let length = Math.sqrt(vect.length),
-        matrix = make2DArray(length, length);
-    let m = matrix.length, n = matrix[0].length, t = 0;
+  let length = Math.sqrt(vect.length),
+    matrix = make2DArray(length, length);
+  let m = matrix.length,
+    n = matrix[0].length,
+    t = 0;
 
-    for (let i = 0; i < n + m - 1; i++) {
-        if (i % 2 == 1) {
-            // down left
-            let x = i < n ? 0 : i - n + 1;
-            let y = i < n ? i : n - 1;
-            while (x < m && y >= 0) {
-                matrix[x++][y--] = vect[t++];
-            }
-        } else {
-            // up right
-            let x = i < m ? i : m - 1;
-            let y = i < m ? 0 : i - m + 1;
-            while (x >= 0 && y < n) {
-                matrix[x--][y++] = vect[t++];
-            }
-        }
+  for (let i = 0; i < n + m - 1; i++) {
+    if (i % 2 == 1) {
+      // down left
+      let x = i < n ? 0 : i - n + 1;
+      let y = i < n ? i : n - 1;
+      while (x < m && y >= 0) {
+        matrix[x++][y--] = vect[t++];
+      }
+    } else {
+      // up right
+      let x = i < m ? i : m - 1;
+      let y = i < m ? 0 : i - m + 1;
+      while (x >= 0 && y < n) {
+        matrix[x--][y++] = vect[t++];
+      }
     }
-    return matrix;
+  }
+  return matrix;
 }
 
 // ------------------------------- OTHERS -------------------------------
@@ -230,15 +257,15 @@ function zigZagToArray(vect) {
 function formatBytes(a, b) {
   if (0 == a) return "0 Bytes";
   var c = 1024,
-      d = b || 2,
-      e = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"],
-      f = Math.floor(Math.log(a) / Math.log(c));
+    d = b || 2,
+    e = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"],
+    f = Math.floor(Math.log(a) / Math.log(c));
   return parseFloat((a / Math.pow(c, f)).toFixed(d)) + " " + e[f]
 }
 
 function make2DArray(a, b) {
   var arr = new Array(a);
-  for (var i = 0; i < a; i++) arr[i] = new Array(b); 
+  for (var i = 0; i < a; i++) arr[i] = new Array(b);
   return arr;
 }
 
