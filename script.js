@@ -15,8 +15,7 @@ window.addEventListener('DOMContentLoaded', () => {
         let snippet = canvasCtx.getImageData(x, y, 8, 8); // getting pixels of where clicked
 
         canvasCtx.fillRect(x, y, 8, 8); // filling in black
-        console.log(snippet)
-        canvasSnippetCtx.putImageData(snippet, 0, 0); // filling in new c// filling in canvas
+        canvasSnippetCtx.putImageData(scaleImageData(snippet, 18, canvasSnippetCtx), 0, 0); // filling in new c// filling in canvas
         // canvasSnippetCtx.drawImage(canvasSnippet, 0, 0, canvasSnippet.width, canvasSnippet.height);
     });
 
@@ -45,6 +44,33 @@ window.addEventListener('DOMContentLoaded', () => {
 
     fileUploadListener();
 });
+
+// https://stackoverflow.com/questions/3448347/how-to-scale-an-imagedata-in-html-canvas
+function scaleImageData(imageData, scale, c) {
+    var scaled = c.createImageData(imageData.width * scale, imageData.height * scale);
+  
+    for(var row = 0; row < imageData.height; row++) {
+      for(var col = 0; col < imageData.width; col++) {
+        var sourcePixel = [
+          imageData.data[(row * imageData.width + col) * 4 + 0],
+          imageData.data[(row * imageData.width + col) * 4 + 1],
+          imageData.data[(row * imageData.width + col) * 4 + 2],
+          imageData.data[(row * imageData.width + col) * 4 + 3]
+        ];
+        for(var y = 0; y < scale; y++) {
+          var destRow = row * scale + y;
+          for(var x = 0; x < scale; x++) {
+            var destCol = col * scale + x;
+            for(var i = 0; i < 4; i++) {
+              scaled.data[(destRow * scaled.width + destCol) * 4 + i] =
+                sourcePixel[i];
+            }
+          }
+        }
+      }
+    }
+    return scaled;
+  }
 
 // https://stackoverflow.com/questions/14224535/scaling-between-two-number-ranges
 function convertRange(value, r1, r2) {
