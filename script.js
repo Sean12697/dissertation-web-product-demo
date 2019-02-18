@@ -8,20 +8,23 @@ window.addEventListener('DOMContentLoaded', () => {
 
     addImage("lenna.png", "cnvsLennaBefore");
 
+    // TESTIN
     document.getElementById("cnvsLennaBefore").addEventListener("click", e => {
-        console.log(e)
-        // let x = e.clientX - document.getElementById("cnvsLennaBefore").offsetLeft,
-        //     y = e.clientY - document.getElementById("cnvsLennaBefore").offsetTop,
-        //     before = document.getElementById("cnvsLennaBefore"),
-        //     beforeCtx = before.getContext("2d"),
-        //     beforeSnippet = document.getElementById("cnvsBeforeSnippet"),
-        //     beforeSnippetCtx = beforeSnippet.getContext("2d"),
-        //     snippet = beforeCtx.getImageData(x, y, 8, 8);
+        // https://stackoverflow.com/questions/43172115/get-the-mouse-coordinates-when-clicking-on-canvas
+        // https://stackoverflow.com/questions/55677/how-do-i-get-the-coordinates-of-a-mouse-click-on-a-canvas-element ??
+        console.log(e) // x/y incorrect
+        let x = e.x - document.getElementById("cnvsLennaBefore").offsetLeft,
+            y = e.y - document.getElementById("cnvsLennaBefore").offsetTop,
+            before = document.getElementById("cnvsLennaBefore"),
+            beforeCtx = before.getContext("2d"),
+            beforeSnippet = document.getElementById("cnvsBeforeSnippet"),
+            beforeSnippetCtx = beforeSnippet.getContext("2d"),
+            snippet = beforeCtx.getImageData(x, y, 8, 8); // getting pixels of where clicked
 
-        // beforeCtx.fillRect(x, y, 8, 8);
-        // beforeSnippetCtx.putImageData(snippet, 0, 0);
-        // beforeSnippetCtx.drawImage(beforeSnippet, 0, 0, beforeSnippet.width, beforeSnippet.height);
-    });
+        beforeCtx.fillRect(x, y, 8, 8); // filling in black
+        beforeSnippetCtx.putImageData(snippet, 0, 0); // filling in new c// filling in canvas
+        beforeSnippetCtx.drawImage(beforeSnippet, 0, 0, beforeSnippet.width, beforeSnippet.height);
+    }); // TESTIN
 
     document.getElementById("generate").addEventListener('click', () => encodeDecodeToCanvas(document.getElementById("cnvsLennaBefore"), "cnvsLennaAfter"));
     document.getElementById("copy").addEventListener('click', () => {
