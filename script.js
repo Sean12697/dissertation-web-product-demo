@@ -9,14 +9,20 @@ window.addEventListener('DOMContentLoaded', () => {
     addImage("lenna.png", "cnvsLennaBefore");
 
     document.getElementById("cnvsLennaBefore").addEventListener("mouseup", e => {
+        let width = 8, height = 8, snippetArray = make2DArray(width, height);
         let canvas = document.getElementById("cnvsLennaBefore"), canvasSnippet = document.getElementById("cnvsBeforeSnippet");
         let x = e.offsetX * (canvas.width / canvas.clientWidth), y = e.offsetY * (canvas.height / canvas.clientHeight);
         let canvasCtx = canvas.getContext("2d"), canvasSnippetCtx = canvasSnippet.getContext("2d");
-        let snippet = canvasCtx.getImageData(x, y, 8, 8); // getting pixels of where clicked
-
-        canvasCtx.fillRect(x, y, 8, 8); // filling in black
-        canvasSnippetCtx.putImageData(scaleImageData(snippet, 18, canvasSnippetCtx), 0, 0); // filling in new c// filling in canvas
-        // canvasSnippetCtx.drawImage(canvasSnippet, 0, 0, canvasSnippet.width, canvasSnippet.height);
+        let snippet = canvasCtx.getImageData(x, y, width, height); // getting pixels of where clicked
+        // console.log(snippet)
+        canvasCtx.fillRect(x, y, width, height); // filling in black
+        snippet.data.forEach((pix, i) => {
+            let pos = Math.floor(i/4), col = i % 4, x = pos % width, y = Math.floor(pos / width), curr = snippetArray[y][x];
+            snippetArray[y][x] = (curr) ? curr : "#"; // if null/empty add a # at the begining
+            snippetArray[y][x] += (col == 3) ? "" : componentToHex(pix); // if the alpha channel
+        });
+        drawSnippet(snippetArray, "cnvsBeforeSnippet");
+        // encodeDecodeToCanvas(canvasSnippet, "cnvsAfterSnippet");
     });
 
     document.getElementById("generate").addEventListener('click', () => encodeDecodeToCanvas(document.getElementById("cnvsLennaBefore"), "cnvsLennaAfter"));
@@ -44,33 +50,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
     fileUploadListener();
 });
-
-// https://stackoverflow.com/questions/3448347/how-to-scale-an-imagedata-in-html-canvas
-function scaleImageData(imageData, scale, c) {
-    var scaled = c.createImageData(imageData.width * scale, imageData.height * scale);
-  
-    for(var row = 0; row < imageData.height; row++) {
-      for(var col = 0; col < imageData.width; col++) {
-        var sourcePixel = [
-          imageData.data[(row * imageData.width + col) * 4 + 0],
-          imageData.data[(row * imageData.width + col) * 4 + 1],
-          imageData.data[(row * imageData.width + col) * 4 + 2],
-          imageData.data[(row * imageData.width + col) * 4 + 3]
-        ];
-        for(var y = 0; y < scale; y++) {
-          var destRow = row * scale + y;
-          for(var x = 0; x < scale; x++) {
-            var destCol = col * scale + x;
-            for(var i = 0; i < 4; i++) {
-              scaled.data[(destRow * scaled.width + destCol) * 4 + i] =
-                sourcePixel[i];
-            }
-          }
-        }
-      }
-    }
-    return scaled;
-  }
 
 // https://stackoverflow.com/questions/14224535/scaling-between-two-number-ranges
 function convertRange(value, r1, r2) {
@@ -177,6 +156,18 @@ function drawOnCanvas(arr, cnvs, background) {
             ctx.fillRect(j * 50, i * 50, 50, 50);
             ctx.fillStyle = "#000";
             ctx.fillText(y, j * 50 + 2, i * 50 + 18);
+        });
+    });
+}
+
+function drawSnippet(array, cnvs) {
+    // console.log(array)
+    let canvas = document.getElementById(cnvs), ctx = canvas.getContext("2d"), xSize = canvas.width / array[0].length, ySize = canvas.height / array.length;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    array.forEach((x, i) => {
+        x.forEach((y, j) => {
+            ctx.fillStyle = y; // .reduce(a => componentToHex(a), "#"); // [255, 0, 0] to #ff0000
+            ctx.fillRect(j * 50, i * 50, 50, 50);
         });
     });
 }
