@@ -1,5 +1,6 @@
 let encoded = [],
-    scalesArray = [];
+    scalesArray = [],
+    snippet = [];
 
 window.addEventListener('DOMContentLoaded', () => {
     scalesArray = apsc(document.getElementsByClassName('scale'));
@@ -9,19 +10,26 @@ window.addEventListener('DOMContentLoaded', () => {
     addImage("lenna.png", "cnvsLennaBefore");
 
     document.getElementById("cnvsLennaBefore").addEventListener("mouseup", e => {
-        let width = 16, height = 16;
-        let canvas = document.getElementById("cnvsLennaBefore"), canvasSnippet = document.getElementById("cnvsBeforeSnippet");
-        let x = e.offsetX * (canvas.width / canvas.clientWidth), y = e.offsetY * (canvas.height / canvas.clientHeight);
-        let canvasCtx = canvas.getContext("2d"), canvasSnippetCtx = canvasSnippet.getContext("2d");
-        let snippet = canvasCtx.getImageData(x-(width/2), y-(height/2), width, height); // getting pixels of where clicked
+        let width = 16,
+            height = 16;
+        let canvas = document.getElementById("cnvsLennaBefore"),
+            canvasSnippet = document.getElementById("cnvsBeforeSnippet");
+        let x = e.offsetX * (canvas.width / canvas.clientWidth),
+            y = e.offsetY * (canvas.height / canvas.clientHeight);
+        let canvasCtx = canvas.getContext("2d"),
+            canvasSnippetCtx = canvasSnippet.getContext("2d");
+        snippet = canvasCtx.getImageData(x - (width / 2), y - (height / 2), width, height); // getting pixels of where clicked
         // canvasCtx.fillRect(x-(width/2), y-(height/2), width, height); // filling in black
         let snippetRGBA = imageDataToRGBArray(snippet);
-        drawSnippet(arrayRGBAToHexes(snippetRGBA), "cnvsBeforeSnippet");
-        drawSnippet(arrayRGBAToHexes(decodeRGBA(encodeRGBA(snippetRGBA))), "cnvsAfterSnippet");
+        hexArrayToCanvas(arrayRGBAToHexes(snippetRGBA), "cnvsBeforeSnippet");
+        hexArrayToCanvas(arrayRGBAToHexes(decodeRGBA(encodeRGBA(snippetRGBA))), "cnvsAfterSnippet");
         // encodeDecodeToCanvas(canvasSnippet, "cnvsAfterSnippet");
     });
 
-    document.getElementById("generate").addEventListener('click', () => encodeDecodeToCanvas(document.getElementById("cnvsLennaBefore"), "cnvsLennaAfter"));
+    document.getElementById("generate").addEventListener('click', () => {
+        encodeDecodeToCanvas(document.getElementById("cnvsLennaBefore"), "cnvsLennaAfter");
+        hexArrayToCanvas(arrayRGBAToHexes(decodeRGBA(encodeRGBA(imageDataToRGBArray(snippet)))), "cnvsAfterSnippet");
+    });
     document.getElementById("copy").addEventListener('click', () => {
         let copyText = document.getElementById("txtTable");
         copyText.select();
@@ -50,7 +58,10 @@ window.addEventListener('DOMContentLoaded', () => {
 function imageDataToRGBArray(imageData) {
     let rgba = make3DArray(4, imageData.width, imageData.height);
     imageData.data.forEach((pix, i) => {
-        let pos = Math.floor(i/4), col = i % 4, x = pos % imageData.width, y = Math.floor(pos / imageData.width);
+        let pos = Math.floor(i / 4),
+            col = i % 4,
+            x = pos % imageData.width,
+            y = Math.floor(pos / imageData.width);
         rgba[col][y][x] = pix - 1;
     });
     return rgba;
@@ -58,7 +69,7 @@ function imageDataToRGBArray(imageData) {
 
 function arrayRGBAToHexes(RGBArray) {
     let arr = make2DArray(RGBArray[0][0].length, RGBArray[0].length);
-    for(let y = 0; y < RGBArray[0].length; y++) {
+    for (let y = 0; y < RGBArray[0].length; y++) {
         for (let x = 0; x < RGBArray[0][0].length; x++) {
             arr[y][x] = `#${componentToHex(RGBArray[0][y][x])}${componentToHex(RGBArray[1][y][x])}${componentToHex(RGBArray[2][y][x])}`;
         }
@@ -181,12 +192,15 @@ function drawOnCanvas(arr, cnvs, background) {
     });
 }
 
-function drawSnippet(array, cnvs) {
-    let canvas = document.getElementById(cnvs), ctx = canvas.getContext("2d"), xSize = canvas.clientWidth / array[0].length, ySize = canvas.clientHeight / array.length;
+function hexArrayToCanvas(array, cnvs) {
+    let canvas = document.getElementById(cnvs),
+        ctx = canvas.getContext("2d"),
+        xSize = canvas.clientWidth / array[0].length,
+        ySize = canvas.clientHeight / array.length;
     ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
     array.forEach((x, i) => {
         x.forEach((y, j) => {
-            ctx.fillStyle = y; 
+            ctx.fillStyle = y;
             ctx.fillRect(j * xSize, i * ySize, xSize, ySize);
         });
     });
