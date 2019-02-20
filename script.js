@@ -1,6 +1,9 @@
 let encoded = [],
     scalesArray = [],
-    snippet,
+    snippetBefore,
+    snippetAfter,
+    xPreviousClicked,
+    yPreviousClicked,
     snippetSize = 16,
     txtTable,
     arrayRegex = /(\[((\[((([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]),){7}([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\]),){7}(\[((([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]),){7}([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\])\])/;
@@ -14,25 +17,21 @@ window.addEventListener('DOMContentLoaded', () => {
     addImage("lenna.png", "cnvsLennaBefore");
 
     document.getElementById("cnvsLennaBefore").addEventListener("mouseup", e => {
-        let width = snippetSize,
-            height = snippetSize;
-        let canvas = document.getElementById("cnvsLennaBefore"),
-            canvasSnippet = document.getElementById("cnvsBeforeSnippet");
-        let x = e.offsetX * (canvas.width / canvas.clientWidth),
-            y = e.offsetY * (canvas.height / canvas.clientHeight);
-        let canvasCtx = canvas.getContext("2d"),
-            canvasSnippetCtx = canvasSnippet.getContext("2d");
-        snippet = canvasCtx.getImageData(x - (width / 2), y - (height / 2), width, height); // getting pixels of where clicked
-        // canvasCtx.fillRect(x-(width/2), y-(height/2), width, height); // filling in black
-        let snippetRGBA = imageDataToRGBArray(snippet);
-        hexArrayToCanvas(arrayRGBAToHexes(snippetRGBA), "cnvsBeforeSnippet");
-        hexArrayToCanvas(arrayRGBAToHexes(decodeRGBA(encodeRGBA(snippetRGBA))), "cnvsAfterSnippet");
-        // encodeDecodeToCanvas(canvasSnippet, "cnvsAfterSnippet");
+        // Creating canvas element variable
+        let canvasBefore = document.getElementById("cnvsLennaBefore");
+        // Creating x/y of where the user has clicked
+        let x = e.offsetX * (canvasBefore.width / canvasBefore.clientWidth),
+            y = e.offsetY * (canvasBefore.height / canvasBefore.clientHeight);
+        // Setting global x/y for use when getting the same block after re-quantising the image
+        xPreviousClicked = x;
+        yPreviousClicked = y;
+        // Creating snippets
+        createSnippets();
     });
 
     document.getElementById("generate").addEventListener('click', () => {
         encodeDecodeToCanvas(document.getElementById("cnvsLennaBefore"), "cnvsLennaAfter");
-        if (snippet) hexArrayToCanvas(arrayRGBAToHexes(decodeRGBA(encodeRGBA(imageDataToRGBArray(snippet)))), "cnvsAfterSnippet");
+        if (snippetBefore && snippetAfter && xPreviousClicked && yPreviousClicked) createSnippets();
     });
     document.getElementById("copy").addEventListener('click', () => {
         txtTable.select();
@@ -48,7 +47,7 @@ window.addEventListener('DOMContentLoaded', () => {
     // If the user changes the text of the array, it will text the format and convert it to the array
     txtTable.addEventListener("change", () => {
         if (txtTable.value.toString().match(arrayRegex)) {
-            let flatStream = txtTable.value.toString().replace(/[\[\]']+/g,'').split(',');
+            let flatStream = txtTable.value.toString().replace(/[\[\]']+/g, '').split(',');
             qtable = flatArrayTo2DArray(flatStream);
             scalesMatchArray();
             renderTables();
@@ -74,9 +73,19 @@ window.addEventListener('DOMContentLoaded', () => {
     fileUploadListener();
 });
 
+function createSnippets() {
+    // Getting imageData of where clicked
+    snippetBefore = document.getElementById("cnvsLennaBefore").getContext("2d").getImageData(xPreviousClicked - (snippetSize / 2), yPreviousClicked - (snippetSize / 2), snippetSize, snippetSize);
+    snippetAfter = document.getElementById("cnvsLennaAfter").getContext("2d").getImageData(xPreviousClicked - (snippetSize / 2), yPreviousClicked - (snippetSize / 2), snippetSize, snippetSize);
+    // Setting snippet values
+    hexArrayToCanvas(arrayRGBAToHexes(imageDataToRGBArray(snippetBefore)), "cnvsBeforeSnippet");
+    hexArrayToCanvas(arrayRGBAToHexes(imageDataToRGBArray(snippetAfter)), "cnvsAfterSnippet");
+}
+
 function flatArrayTo2DArray(array) {
-    let size = Math.sqrt(array.length), newArray = make2DArray(size, size);
-    array.forEach((v, i) => newArray[Math.floor(i/size)][i%size] = parseInt(v));
+    let size = Math.sqrt(array.length),
+        newArray = make2DArray(size, size);
+    array.forEach((v, i) => newArray[Math.floor(i / size)][i % size] = parseInt(v));
     return newArray;
 }
 
