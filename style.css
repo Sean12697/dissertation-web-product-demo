@@ -95,6 +95,7 @@ input:valid {
     border: 1px solid red;
     position: absolute;
     float: left;
+    pointer-events: none;
 }
 
 /* #generate {
