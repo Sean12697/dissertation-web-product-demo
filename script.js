@@ -9,19 +9,15 @@ window.addEventListener('DOMContentLoaded', () => {
     addImage("lenna.png", "cnvsLennaBefore");
 
     document.getElementById("cnvsLennaBefore").addEventListener("mouseup", e => {
-        let width = 8, height = 8, snippetArray = make2DArray(width, height);
+        let width = 16, height = 16;
         let canvas = document.getElementById("cnvsLennaBefore"), canvasSnippet = document.getElementById("cnvsBeforeSnippet");
         let x = e.offsetX * (canvas.width / canvas.clientWidth), y = e.offsetY * (canvas.height / canvas.clientHeight);
         let canvasCtx = canvas.getContext("2d"), canvasSnippetCtx = canvasSnippet.getContext("2d");
-        let snippet = canvasCtx.getImageData(x, y, width, height); // getting pixels of where clicked
-        // console.log(snippet)
-        canvasCtx.fillRect(x, y, width, height); // filling in black
-        snippet.data.forEach((pix, i) => {
-            let pos = Math.floor(i/4), col = i % 4, x = pos % width, y = Math.floor(pos / width), curr = snippetArray[y][x];
-            snippetArray[y][x] = (curr) ? curr : "#"; // if null/empty add a # at the begining
-            snippetArray[y][x] += (col == 3) ? "" : componentToHex(pix); // if the alpha channel
-        });
-        drawSnippet(snippetArray, "cnvsBeforeSnippet");
+        let snippet = canvasCtx.getImageData(x-(width/2), y-(height/2), width, height); // getting pixels of where clicked
+        // canvasCtx.fillRect(x-(width/2), y-(height/2), width, height); // filling in black
+        let snippetRGBA = imageDataToRGBArray(snippet);
+        drawSnippet(arrayRGBAToHexes(snippetRGBA), "cnvsBeforeSnippet");
+        drawSnippet(arrayRGBAToHexes(decodeRGBA(encodeRGBA(snippetRGBA))), "cnvsAfterSnippet");
         // encodeDecodeToCanvas(canvasSnippet, "cnvsAfterSnippet");
     });
 
@@ -50,6 +46,31 @@ window.addEventListener('DOMContentLoaded', () => {
 
     fileUploadListener();
 });
+
+function imageDataToRGBArray(imageData) {
+    let rgba = make3DArray(4, imageData.width, imageData.height);
+    imageData.data.forEach((pix, i) => {
+        let pos = Math.floor(i/4), col = i % 4, x = pos % imageData.width, y = Math.floor(pos / imageData.width);
+        rgba[col][y][x] = pix - 1;
+    });
+    return rgba;
+}
+
+function arrayRGBAToHexes(RGBArray) {
+    let arr = make2DArray(RGBArray[0][0].length, RGBArray[0].length);
+    for(let y = 0; y < RGBArray[0].length; y++) {
+        for (let x = 0; x < RGBArray[0][0].length; x++) {
+            arr[y][x] = `#${componentToHex(RGBArray[0][y][x])}${componentToHex(RGBArray[1][y][x])}${componentToHex(RGBArray[2][y][x])}`;
+        }
+    }
+    return arr;
+}
+
+function make3DArray(count, width, height) {
+    var arr = new Array(count);
+    for (var i = 0; i < count; i++) arr[i] = make2DArray(width, height);
+    return arr;
+}
 
 // https://stackoverflow.com/questions/14224535/scaling-between-two-number-ranges
 function convertRange(value, r1, r2) {
@@ -161,13 +182,12 @@ function drawOnCanvas(arr, cnvs, background) {
 }
 
 function drawSnippet(array, cnvs) {
-    // console.log(array)
-    let canvas = document.getElementById(cnvs), ctx = canvas.getContext("2d"), xSize = canvas.width / array[0].length, ySize = canvas.height / array.length;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let canvas = document.getElementById(cnvs), ctx = canvas.getContext("2d"), xSize = canvas.clientWidth / array[0].length, ySize = canvas.clientHeight / array.length;
+    ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
     array.forEach((x, i) => {
         x.forEach((y, j) => {
-            ctx.fillStyle = y; // .reduce(a => componentToHex(a), "#"); // [255, 0, 0] to #ff0000
-            ctx.fillRect(j * 50, i * 50, 50, 50);
+            ctx.fillStyle = y; 
+            ctx.fillRect(j * xSize, i * ySize, xSize, ySize);
         });
     });
 }
