@@ -45,15 +45,17 @@ window.addEventListener('DOMContentLoaded', () => {
         renderTables();
     });
 
+    // If the user changes the text of the array, it will text the format and convert it to the array
     txtTable.addEventListener("change", () => {
         if (txtTable.value.toString().match(arrayRegex)) {
             let flatStream = txtTable.value.toString().replace(/[\[\]']+/g,'').split(',');
-            console.log(flatStream)
             qtable = flatArrayTo2DArray(flatStream);
             scalesMatchArray();
             renderTables();
         }
     });
+
+    // changing the global snippet size
     document.getElementById("size").addEventListener("change", () => {
         snippetSize = document.getElementById("size").value;
         document.getElementById("txtSize").innerHTML = `${snippetSize}*${snippetSize}`;
