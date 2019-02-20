@@ -31,7 +31,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById("generate").addEventListener('click', () => {
         encodeDecodeToCanvas(document.getElementById("cnvsLennaBefore"), "cnvsLennaAfter");
-        if (snippetBefore && snippetAfter && xPreviousClicked && yPreviousClicked) createSnippets();
     });
     document.getElementById("copy").addEventListener('click', () => {
         txtTable.select();
@@ -186,6 +185,7 @@ function encodeDecodeToCanvas(originalCanvas, afterCanvas) {
     encodeDecode(originalCanvas).then(encodeDecodeResults => {
         setMetaText(`You compressed ${encodeDecodeResults[1]}% of the image, being ${formatBytes(encodeDecodeResults[2])} of the original ${formatBytes(encodeDecodeResults[3])} channel data.`);
         streamToCanvas(afterCanvas, encodeDecodeResults[0], originalCanvas.width, originalCanvas.height);
+        if (snippetBefore && snippetAfter && xPreviousClicked && yPreviousClicked) createSnippets();
     });
 }
 
