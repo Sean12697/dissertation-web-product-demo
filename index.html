@@ -11,7 +11,19 @@
 </head>
 <body>
     <h1>Personalised JPEG Quantization Table</h1>
-    <p id="explanation">Part of the JPEG image format standard includes a "Quantization Table", this helps compress an image by going over each 8*8 block in a given image with it. Below is the table often used based on psycho-visual experiments, but by using the sliders next to the table, you can manipulate it to compress the image how you deem fit, then click the <b>Quantize</b> button to see the results.</p>
+    <p id="explanation">
+        Part of the JPEG image format standard includes a "Quantization Table" (an 8*8 matrix/array of values), 
+        this essentially helps compress an image by going over each 8*8 block in a given image with it. 
+        Below is the table often used based on psycho-visual experiments, but by using the sliders next to the table, 
+        you can manipulate it to compress the image how you deem fit, then click the <b>Quantize</b> button to see the results.
+        <br><br>
+        A few additional features added are:
+        <ul>
+            <li>Upload your own photo to see how compression will work on it.</li>
+            <li>Copy your customised quantization table (into a format most programming languages can use)</li>
+            <li>Click on part of the original (before) image, to see how the compression would effect that segment of the image.</li>
+        </ul>
+    </p>
     <article>
         <section><h2>Before</h2></section>
         <section><h2>Quantize</h2></section>
