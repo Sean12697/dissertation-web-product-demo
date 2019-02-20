@@ -27,6 +27,14 @@ window.addEventListener('DOMContentLoaded', () => {
         yPreviousClicked = y;
         // Creating snippets
         createSnippets();
+        // Show selection
+        let beforeSelectionBox = document.getElementById("lennaBeforeSelectedBox");
+        beforeSelectionBox.style.display = `inline-block`;
+        beforeSelectionBox.style.width = `${snippetSize}px`;
+        beforeSelectionBox.style.height = `${snippetSize}px`;
+        beforeSelectionBox.style.left = `${e.pageX-(snippetSize/2)}px`;
+        beforeSelectionBox.style.top = `${e.pageY-(snippetSize/2)}px`;
+        beforeSelectionBox.style["z-index"] = 2;
     });
 
     document.getElementById("generate").addEventListener('click', () => {
@@ -55,7 +63,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // changing the global snippet size
     document.getElementById("size").addEventListener("change", () => {
-        snippetSize = document.getElementById("size").value;
+        snippetSize = parseInt(document.getElementById("size").value);
         document.getElementById("txtSize").innerHTML = `${snippetSize}*${snippetSize}`;
     });
 

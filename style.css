@@ -88,6 +88,15 @@ input:valid {
     border-color: #ccc;
 }
 
+/* Pseudo selectors */
+#lennaBeforeSelectedBox {
+    display: none;
+    content: '';
+    border: 1px solid red;
+    position: absolute;
+    float: left;
+}
+
 /* #generate {
     background-color: rgba(0,0,0,0);
     border: 2px solid rgb(109, 109, 109);
