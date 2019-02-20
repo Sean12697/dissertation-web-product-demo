@@ -1,9 +1,9 @@
 let encoded = [],
     scalesArray = [],
-    snippet = [],
+    snippet,
     snippetSize = 16,
     txtTable,
-    arrayRegex = /(\[((\[((([0-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]),){7}([0-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\]),){7}(\[((([0-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]),){7}([0-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\])\])/;
+    arrayRegex = /(\[((\[((([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]),){7}([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\]),){7}(\[((([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]),){7}([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\])\])/;
 
 window.addEventListener('DOMContentLoaded', () => {
     txtTable = document.getElementById("txtTable");
@@ -32,7 +32,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById("generate").addEventListener('click', () => {
         encodeDecodeToCanvas(document.getElementById("cnvsLennaBefore"), "cnvsLennaAfter");
-        hexArrayToCanvas(arrayRGBAToHexes(decodeRGBA(encodeRGBA(imageDataToRGBArray(snippet)))), "cnvsAfterSnippet");
+        if (snippet) hexArrayToCanvas(arrayRGBAToHexes(decodeRGBA(encodeRGBA(imageDataToRGBArray(snippet)))), "cnvsAfterSnippet");
     });
     document.getElementById("copy").addEventListener('click', () => {
         txtTable.select();
@@ -45,10 +45,12 @@ window.addEventListener('DOMContentLoaded', () => {
         renderTables();
     });
 
-    txtTable.addEventListener("input", () => {
+    txtTable.addEventListener("change", () => {
         if (txtTable.value.toString().match(arrayRegex)) {
-            let newT = txtTable.value.toString().split('[').map(t => t.replace(']', '')).split('\'').map(r => r.map(v => parseInt(v)));
-            console.log(newT)
+            let flatStream = txtTable.value.toString().replace(/[\[\]']+/g,'').split(',');
+            console.log(flatStream)
+            qtable = flatArrayTo2DArray(flatStream);
+            scalesMatchArray();
             renderTables();
         }
     });
@@ -69,6 +71,12 @@ window.addEventListener('DOMContentLoaded', () => {
 
     fileUploadListener();
 });
+
+function flatArrayTo2DArray(array) {
+    let size = Math.sqrt(array.length), newArray = make2DArray(size, size);
+    array.forEach((v, i) => newArray[Math.floor(i/size)][i%size] = v);
+    return newArray;
+}
 
 function imageDataToRGBArray(imageData) {
     let rgba = make3DArray(4, imageData.width, imageData.height);
