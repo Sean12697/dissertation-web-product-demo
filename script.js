@@ -76,7 +76,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function flatArrayTo2DArray(array) {
     let size = Math.sqrt(array.length), newArray = make2DArray(size, size);
-    array.forEach((v, i) => newArray[Math.floor(i/size)][i%size] = v);
+    array.forEach((v, i) => newArray[Math.floor(i/size)][i%size] = parseInt(v));
     return newArray;
 }
 
