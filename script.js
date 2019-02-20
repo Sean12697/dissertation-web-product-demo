@@ -201,9 +201,9 @@ function drawOnCanvas(arr, cnvs, background) {
 function hexArrayToCanvas(array, cnvs) {
     let canvas = document.getElementById(cnvs),
         ctx = canvas.getContext("2d"),
-        xSize = canvas.clientWidth / array[0].length,
-        ySize = canvas.clientHeight / array.length;
-    ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+        xSize = canvas.width / array[0].length,
+        ySize = canvas.height / array.length;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     array.forEach((x, i) => {
         x.forEach((y, j) => {
             ctx.fillStyle = y;
