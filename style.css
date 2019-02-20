@@ -78,6 +78,15 @@ button {
     display: inline-block;
 }
 
+/* https://webdesign.tutsplus.com/tutorials/html5-form-validation-with-the-pattern-attribute--cms-25145 */
+input:invalid {
+    border-color: red;
+}
+
+input,
+input:valid {
+    border-color: #ccc;
+}
 
 /* #generate {
     background-color: rgba(0,0,0,0);

@@ -1,9 +1,12 @@
 let encoded = [],
     scalesArray = [],
     snippet = [],
-    snippetSize = 16;
+    snippetSize = 16,
+    txtTable,
+    arrayRegex = /(\[((\[((([0-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]),){7}([0-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\]),){7}(\[((([0-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]),){7}([0-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\])\])/;
 
 window.addEventListener('DOMContentLoaded', () => {
+    txtTable = document.getElementById("txtTable");
     scalesArray = apsc(document.getElementsByClassName('scale'));
     scalesMatchArray();
     renderTables();
@@ -32,8 +35,7 @@ window.addEventListener('DOMContentLoaded', () => {
         hexArrayToCanvas(arrayRGBAToHexes(decodeRGBA(encodeRGBA(imageDataToRGBArray(snippet)))), "cnvsAfterSnippet");
     });
     document.getElementById("copy").addEventListener('click', () => {
-        let copyText = document.getElementById("txtTable");
-        copyText.select();
+        txtTable.select();
         document.execCommand("copy");
         // alert("Copied the array: " + copyText.value);
     });
@@ -43,6 +45,13 @@ window.addEventListener('DOMContentLoaded', () => {
         renderTables();
     });
 
+    txtTable.addEventListener("input", () => {
+        if (txtTable.value.toString().match(arrayRegex)) {
+            let newT = txtTable.value.toString().split('[').map(t => t.replace(']', '')).split('\'').map(r => r.map(v => parseInt(v)));
+            console.log(newT)
+            renderTables();
+        }
+    });
     document.getElementById("size").addEventListener("change", () => {
         snippetSize = document.getElementById("size").value;
         document.getElementById("txtSize").innerHTML = `${snippetSize}*${snippetSize}`;
@@ -107,7 +116,7 @@ function scalesMatchArray() {
 function renderTables() {
     // drawOnCanvas(signals, "before", greyToHex);
     drawOnCanvas(qtable, "table", (i) => `rgba(${i},${i},${i},0.6)`);
-    document.getElementById("txtTable").value = `[ ${qtable.map(line => '[' + line.toString() + ']').toString()} ]`;
+    txtTable.value = `[${qtable.map(line => '[' + line.toString() + ']').toString()}]`;
     // console.log(encode(signals, qtable))
     // drawOnCanvas(decode(encode(signals, qtable), qtable), "after", greyToHex);
 }

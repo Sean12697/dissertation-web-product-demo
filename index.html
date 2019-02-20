@@ -43,7 +43,7 @@
                     <div><p>Mid-High</p><input type="range" id="mid-high" class="scale" min="0" max="1" step="0.05" defaultValue="0.5"></div>
                     <div><p>High</p><input type="range" id="high" class="scale" min="0" max="1" step="0.05" defaultValue="0.5"></div>
                 </div>
-                <input id="txtTable" type="text">
+                <input id="txtTable" type="text" pattern="(\[((\[((([0-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]),){7}([0-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\]),){7}(\[((([0-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]),){7}([0-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\])\])">
                 <p>Sample size <span id="txtSize">16*16</span>: <input type="range" id="size" min="8" max="64" step="8" value="16"></p>
                 <div id="generateElements">
                     <button id="default">Use Default Table</button>
