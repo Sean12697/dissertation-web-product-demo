@@ -1,6 +1,7 @@
 let encoded = [],
     scalesArray = [],
-    snippet = [];
+    snippet = [],
+    snippetSize = 16;
 
 window.addEventListener('DOMContentLoaded', () => {
     scalesArray = apsc(document.getElementsByClassName('scale'));
@@ -10,8 +11,8 @@ window.addEventListener('DOMContentLoaded', () => {
     addImage("lenna.png", "cnvsLennaBefore");
 
     document.getElementById("cnvsLennaBefore").addEventListener("mouseup", e => {
-        let width = 16,
-            height = 16;
+        let width = snippetSize,
+            height = snippetSize;
         let canvas = document.getElementById("cnvsLennaBefore"),
             canvasSnippet = document.getElementById("cnvsBeforeSnippet");
         let x = e.offsetX * (canvas.width / canvas.clientWidth),
@@ -40,6 +41,11 @@ window.addEventListener('DOMContentLoaded', () => {
         qtable = defaulTable;
         scalesMatchArray();
         renderTables();
+    });
+
+    document.getElementById("size").addEventListener("change", () => {
+        snippetSize = document.getElementById("size").value;
+        document.getElementById("txtSize").innerHTML = `${snippetSize}*${snippetSize}`;
     });
 
     scalesArray.forEach((x, i) => {

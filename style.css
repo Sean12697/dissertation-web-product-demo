@@ -49,7 +49,6 @@ canvas {
 #scales {
     width: 33%;
 }
-
 #meta {
     margin: 15px 2px;
 }
@@ -71,9 +70,14 @@ button {
     margin-right: 10px;
 }
 
-input[type="range"] {
+#scales input[type="range"] {
     width: 100%;
 }
+
+#size {
+    display: inline-block;
+}
+
 
 /* #generate {
     background-color: rgba(0,0,0,0);
