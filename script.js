@@ -1,5 +1,6 @@
 let encoded = [],
     scalesArray = [],
+    useColour = false,
     snippetBefore,
     snippetAfter,
     xPreviousClicked,
@@ -65,6 +66,11 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById("size").addEventListener("change", () => {
         snippetSize = parseInt(document.getElementById("size").value);
         document.getElementById("txtSize").innerHTML = `${snippetSize}*${snippetSize}`;
+    });
+
+    document.getElementById("colourSwitch").addEventListener("click", () => {
+        useColour = !useColour;
+        document.getElementById("colourSwitch").innerHTML = (useColour) ? "User B&W (FASTER)" : "Use Colour (SLOWER)";
     });
 
     scalesArray.forEach((x, i) => {

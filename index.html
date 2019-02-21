@@ -21,6 +21,9 @@
         click on the <b>Before</b> image, to create a zoomed in version (which you can change the size of via the <b>sample size</b> 
         scale bar) below both images, or even upload your own image via the option below.
         <br><br>
+        By default it has been made to only produce grayscale images (by averaging each colour then applying the compression), due to
+        performance reasons, although if you do wish to view the compressed image in colour, click the <b>Use Colour (SLOWER)</b> button.
+        <br><br>
         Also, if you do wish to keep your Personalised Quantization Table, you can click the <b>Copy Table Array</b> button to add it to
         your clipboard, this can be used in many programming languages, or, can be saved and pasted back into the website at a later date.
     </p>
@@ -47,6 +50,7 @@
                 <input id="txtTable" type="text" pattern="(\[((\[((([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]),){7}([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\]),){7}(\[((([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]),){7}([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\])\])">
                 <p>Sample size <span id="txtSize">16*16</span>: <input type="range" id="size" min="8" max="64" step="8" value="16"></p>
                 <div id="generateElements">
+                    <button id="colourSwitch">Use Colour (SLOWER)</button>
                     <button id="default">Use Default Table</button>
                     <button id="generate">Quantize</button>
                     <button id="copy">Copy Table Array</button>
