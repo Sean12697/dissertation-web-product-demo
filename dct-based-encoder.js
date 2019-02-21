@@ -100,11 +100,11 @@ function RGBArrayToStream(array) {
 
 function encodeRGBA(array) {
   if (!useColour) { // Decode in B&W
-  array = advRGB(array);
-  let applied = applyToArray(array[0], encode, array[0].length, array[0][0].length);
-  return array.map((colourSpace, i) => (i != 3) ? applied : colourSpace);
+    array = advRGB(array);
+    let applied = applyToArray(array[0], encode, array[0].length, array[0][0].length);
+    return array.map((colourSpace, i) => (i != 3) ? applied : colourSpace);
   } else { // Decode in Colour
-  return array.map(colourSpace => applyToArray(colourSpace, encode, array[0].length, array[0][0].length));
+    return array.map(colourSpace => applyToArray(colourSpace, encode, array[0].length, array[0][0].length));
   }
 }
 
@@ -122,10 +122,10 @@ function advRGB(rgbarray) {
 
 function decodeRGBA(array) {
   if (!useColour) { // Decode in B&W
-  let applied = applyToArray(array[0], decode, array[0].length, array[0][0].length);
-  return array.map((colourSpace, i) => (i != 3) ? applied : colourSpace);
+    let applied = applyToArray(array[0], decode, array[0].length, array[0][0].length);
+    return array.map((colourSpace, i) => (i != 3) ? applied : colourSpace);
   } else { // Decode in Colour
-  return array.map(colourSpace => applyToArray(colourSpace, decode, array[0].length, array[0][0].length));
+    return array.map(colourSpace => applyToArray(colourSpace, decode, array[0].length, array[0][0].length));
   }
 }
 
@@ -164,8 +164,8 @@ function setArrayBlock(array, block, x, y, xlen, ylen) {
 // -------------------------- COMPRESSION ---------------------------
 
 function compressionRatio(encoded) {
-  let length = encoded[0].length * encoded[0][0].length; 
-  let lengthAfterCompressed = compressedArraySize(encoded[0]); 
+  let length = encoded[0].length * encoded[0][0].length;
+  let lengthAfterCompressed = compressedArraySize(encoded[0]);
   return [(100 - Math.round((lengthAfterCompressed / length) * 100)), lengthAfterCompressed, length];
 }
 
