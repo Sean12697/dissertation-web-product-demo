@@ -25,12 +25,12 @@ let qtable = defaulTable;
 // ----------------------- MAIN FUNCTIONS ------------------------
 
 function fdct(signals) {
-  var coef = dct([].concat.apply([], signals)).map(n => Math.round(n * 10) / 10);
+  var coef = dct([].concat.apply([], signals).map(v => v-128));
   return signals.map((line, i) => line.map((e, j) => coef[(i * line.length) + j]));
 }
 
 function idct(signals) {
-  var coef = idct1d([].concat.apply([], signals)).map(n => Math.round(n * 10) / 10);
+  var coef = idct1d([].concat.apply([], signals)).map(v => v+128);
   return signals.map((line, i) => line.map((e, j) => Math.round(coef[(i * line.length) + j])));
 }
 
@@ -313,3 +313,25 @@ function idct1d(block) {
   }
   return output;
 };
+
+// -------------------------------------- TESTING ------------------------------------
+// From the following samples on page 12 of this publication
+// https://www.ijg.org/files/Wallace.JPEG.pdf
+
+// var coef = fdct(signals);
+// var quantized = quantize(coef, qtable);
+// var dequantized = dequantize(quantized, qtable);
+// var reconstructed = idct(dequantized);
+
+// console.log("Source Image Samples");
+// console.log(signals);
+// console.log("Forward DCT Coefficients");
+// console.log(coef);
+// console.log("Quantization Table");
+// console.log(qtable);
+// console.log("Normalized Quantized Coefficients");
+// console.log(quantized);
+// console.log("Denormalized Quantized Coefficients");
+// console.log(dequantized);
+// console.log("Reconstructed Image Samples");
+// console.log(reconstructed);
