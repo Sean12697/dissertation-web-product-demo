@@ -140,11 +140,8 @@ function scalesMatchArray() {
 }
 
 function renderTables() {
-    // drawOnCanvas(signals, "before", greyToHex);
     drawOnCanvas(qtable, "table", (i) => `rgba(${i},${i},${i},0.6)`);
     txtTable.value = `[${qtable.map(line => '[' + line.toString() + ']').toString()}]`;
-    // console.log(encode(signals, qtable))
-    // drawOnCanvas(decode(encode(signals, qtable), qtable), "after", greyToHex);
 }
 
 // https://stackoverflow.com/questions/22087076/how-to-make-a-simple-image-upload-using-javascript-html
@@ -168,7 +165,6 @@ function addImage(image, cnvs) {
             height = img.height;
 
         // Downscaling if necessary
-        // https://codepen.io/tuanitpro/pen/wJZJbp
         if (width > height) {
             if (width > MAX_WIDTH) {
                 height *= MAX_WIDTH / width;

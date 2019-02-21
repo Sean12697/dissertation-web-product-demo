@@ -158,8 +158,8 @@ function setArrayBlock(array, block, x, y, xlen, ylen) {
 // -------------------------- COMPRESSION ---------------------------
 
 function compressionRatio(encoded) {
-  let length = encoded[0].length * encoded[0][0].length; // RGBArrayToStream(encoded).length;
-  let lengthAfterCompressed = compressedArraySize(encoded[0]); // compressedRGBASize(encoded);
+  let length = encoded[0].length * encoded[0][0].length; 
+  let lengthAfterCompressed = compressedArraySize(encoded[0]); 
   return [(100 - Math.round((lengthAfterCompressed / length) * 100)), lengthAfterCompressed, length];
 }
 
@@ -191,7 +191,6 @@ function flattern(array) {
 // ------------------------------- ZIG ZAG ------------------------------
 // An assumption is they have the same height as in width
 
-// JAVA : https://coding-interview-solutions.hackingnote.com/problems/matrix-zigzag-traversal.html
 function arrayToZigZag(matrix) {
   let m = matrix.length,
     n = matrix[0].length,
@@ -263,19 +262,6 @@ function make2DArray(a, b) {
   return arr;
 }
 
-// var coef = fdct(signals);
-// var quantized = quantize(coef, qtable);
-// var dequantized = dequantize(quantized, qtable);
-// var reconstructed = idct(dequantized);
-
-// console.log(signals);
-// console.log(coef);
-// console.log(quantized);
-// console.log(dequantized);
-// console.log(reconstructed);
-
-// http://js2.coffee/
-// https://codepen.io/32bitkid/post/exploring-the-discrete-cosine-transform
 function dct(input) {
   var au, av, i, j, k, l, output, sum, u, v, val, x, y;
   output = [];
@@ -298,8 +284,6 @@ function dct(input) {
   return output;
 }
 
-// http://js2.coffee/ 
-// https://codepen.io/32bitkid/post/exploring-the-dct-part-ii
 function idct1d(block) {
   var au, av, i, j, k, l, output, sum, u, v, val, x, y;
   output = [];
