@@ -100,6 +100,7 @@ function clickColourSwitchEventListener() {
     document.getElementById("colourSwitch").addEventListener("click", () => {
         useColour = !useColour; // flipping the boolean value
         document.getElementById("colourSwitch").innerHTML = (useColour) ? "User B&W (FASTER)" : "Use Colour (SLOWER)";
+        encodeDecodeToCanvas(document.getElementById("cnvsLennaBefore"), "cnvsLennaAfter")
     });
 }
 
