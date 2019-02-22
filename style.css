@@ -56,6 +56,10 @@ canvas {
 
 #meta {
     margin: 15px 2px;
+    padding: 8px;
+    border: 1px solid black;
+    background-color: aliceblue;
+    /* font-size: 16px; */
 }
 
 button {
@@ -66,9 +70,15 @@ button {
     margin: 5px;
 }
 
+#upload {
+    overflow: hidden;
+    width: 200px;
+}
+
 #txtUpload, input[type="file"] {
     display: inline-block;
     margin-right: 10px;
+    vertical-align: middle;
 }
 
 #scales input[type="range"] {
