@@ -59,7 +59,10 @@ function mouseUpCanvasBeforeEventListener() {
 }
 
 function clickGenerateEventListner() {
-    document.getElementById("generate").addEventListener('click', () => encodeDecodeToCanvas(document.getElementById("cnvsLennaBefore"), "cnvsLennaAfter"));
+    document.getElementById("generate").addEventListener('click', () => {
+        document.getElementById("warningText").innerHTML = "";
+        encodeDecodeToCanvas(document.getElementById("cnvsLennaBefore"), "cnvsLennaAfter");
+    });
 }
 
 function clickCopyEventListener() {
@@ -71,6 +74,7 @@ function clickCopyEventListener() {
 
 function clickDefaultTableEventListener() {
     document.getElementById("default").addEventListener('click', () => {
+        setWarningText();                 
         qtable = defaulTable;
         scalesMatchArray();
         renderTables();
@@ -117,6 +121,7 @@ function clickColourSwitchEventListener() {
 function changeScalesArrayEventListener() {
     scalesArray.forEach((x, i) => {
         x.addEventListener('change', () => {
+            setWarningText();          
             let tableStream = arrayToZigZag(defaulTable),
                 bit = Math.round(tableStream.length / scalesArray.length) + 1;
             let modified = tableStream.map((v, j) => Math.round(scalesArray[Math.floor(j / bit)].value * 254) + 1);
@@ -259,6 +264,10 @@ function addImage(image, canvasID) {
 
 function redrawCanvas(canvas, imageData) {
     canvas.getContext('2d').putImageData(imageData, 0, 0, 0, 0, canvas.width, canvas.height);
+}
+
+function setWarningText() {
+    document.getElementById("warningText").innerHTML = "Remember to click the Quantize button for the image to update";
 }
 
 function setMetaText(text) {

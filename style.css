@@ -135,6 +135,10 @@ button, #txtTable {
                                 supported by Chrome and Opera */
 }
 
+.red {
+    color: red;
+}
+
 [type="range"] {
     -webkit-appearance: none;
     height: 15px;
