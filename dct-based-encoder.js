@@ -314,23 +314,27 @@ function idct1d(block) {
 };
 
 // ----------------------------------- SANITY TESTING ----------------------------------
+
 // From the following samples on page 12 of this publication
 // https://www.ijg.org/files/Wallace.JPEG.pdf
 
-// var coef = fdct(signals);
-// var quantized = quantize(coef, qtable);
-// var dequantized = dequantize(quantized, qtable);
-// var reconstructed = idct(dequantized);
+var coef = fdct(signals);
+var quantized = quantize(coef, qtable);
+var dequantized = dequantize(quantized, qtable);
+var reconstructed = idct(dequantized);
 
-// console.log("Source Image Samples");
-// console.log(signals);
-// console.log("Forward DCT Coefficients");
-// console.log(coef);
-// console.log("Quantization Table");
-// console.log(qtable);
-// console.log("Normalized Quantized Coefficients");
-// console.log(quantized);
-// console.log("Denormalized Quantized Coefficients");
-// console.log(dequantized);
-// console.log("Reconstructed Image Samples");
-// console.log(reconstructed);
+console.log("Sanity Tests matching up the values produced by my implementation,s to the values shown on page 12 of the following research document: ");
+console.log("https://www.ijg.org/files/Wallace.JPEG.pdf");
+
+console.log("Source Image Samples");
+console.table(signals);
+console.log("Forward DCT Coefficients");
+console.table(coef);
+console.log("Quantization Table");
+console.table(qtable);
+console.log("Normalized Quantized Coefficients");
+console.table(quantized);
+console.log("Denormalized Quantized Coefficients");
+console.table(dequantized);
+console.log("Reconstructed Image Samples");
+console.table(reconstructed);
