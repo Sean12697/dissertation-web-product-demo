@@ -274,7 +274,7 @@ function redrawCanvas(canvas, imageData) {
 
 function setWarningText() {
     let element = document.getElementById("warningText");
-    element.innerHTML = "Remember to click the Quantize button for the image to update";
+    element.innerHTML = "Remember to click the <b>Quantize</b> button for the image to update";
     element.classList.add("animateIn");
 }
 

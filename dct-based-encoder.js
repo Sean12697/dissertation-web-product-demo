@@ -252,7 +252,6 @@ function zigZagToArray(vect) {
 
 // ------------------------------- OTHERS -------------------------------
 
-// https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
 function formatBytes(a, b) {
   if (0 == a) return "0 Bytes";
   var c = 1024,
@@ -314,7 +313,7 @@ function idct1d(block) {
   return output;
 };
 
-// -------------------------------------- TESTING ------------------------------------
+// ----------------------------------- SANITY TESTING ----------------------------------
 // From the following samples on page 12 of this publication
 // https://www.ijg.org/files/Wallace.JPEG.pdf
 
