@@ -7,7 +7,8 @@ let encoded = [],
     xPreviousClicked,
     yPreviousClicked,
     snippetSize = 16,
-    txtTable;
+    txtTable,
+    imageDataUsing;
 
 // --------------------------------------- WINDOW LOADED ---------------------------------------------------
 
@@ -99,8 +100,11 @@ function changeSizeEventListener() {
 function clickColourSwitchEventListener() {
     document.getElementById("colourSwitch").addEventListener("click", () => {
         useColour = !useColour; // flipping the boolean value
-        document.getElementById("colourSwitch").innerHTML = (useColour) ? "User B&W (FASTER)" : "Use Colour (SLOWER)";
-        encodeDecodeToCanvas(document.getElementById("cnvsLennaBefore"), "cnvsLennaAfter")
+        document.getElementById("colourSwitch").innerHTML = (useColour) ? "Use B&W (FASTER)" : "Use Colour (SLOWER)";
+        let canvas = document.getElementById("cnvsLennaBefore");
+        if (useColour) redrawCanvas(canvas, imageDataUsing);
+        if (!useColour) redrawCanvas(canvas, imageDataToBlackAndWhiteImageData(imageDataUsing));
+        encodeDecodeToCanvas(canvas, "cnvsLennaAfter")
     });
 }
 
@@ -235,9 +239,17 @@ function addImage(image, canvasID) {
         canvas.width = width;
         canvas.height = height;
         canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        imageDataUsing = canvas.getContext('2d').getImageData(0, 0, width, height);
+        if (!useColour) { // Convert to black and white
+            redrawCanvas(canvas, imageDataToBlackAndWhiteImageData(imageDataUsing));
+        }
 
         encodeDecodeToCanvas(canvas, "cnvsLennaAfter");
     };
+}
+
+function redrawCanvas(canvas, imageData) {
+    canvas.getContext('2d').putImageData(imageData, 0, 0, 0, 0, canvas.width, canvas.height);
 }
 
 function setMetaText(text) {
@@ -245,6 +257,10 @@ function setMetaText(text) {
 }
 
 // ------------------------------------- TYPE CONVERSIONS -----------------------------------------------------
+
+function imageDataToBlackAndWhiteImageData(imageData) { // going through each index that is not the alpha and adding the surrounding values then dividing to work out the average
+    return new ImageData(imageData.data.map((v, i, arr) => (i % 4 == 3) ? v : ((v + arr[gni(i, -1)] + arr[gni(i, 1)]) / 3)), imageData.width, imageData.height);
+}
 
 // flat being a one dimensional array
 function flatArrayTo2DArray(array) {
@@ -257,7 +273,11 @@ function flatArrayTo2DArray(array) {
 function imageDataToHexes(imageData) {
     let hexes = make2DArray(imageData.width, imageData.height);
     imageData.data.forEach((pix, i) => {
-        let pos = Math.floor(i/4), col = i % 4, x = pos % imageData.width, y = Math.floor(pos / imageData.width), curr = hexes[y][x];
+        let pos = Math.floor(i / 4),
+            col = i % 4,
+            x = pos % imageData.width,
+            y = Math.floor(pos / imageData.width),
+            curr = hexes[y][x];
         hexes[y][x] = (curr) ? curr : "#"; // if null/empty add a # at the beginning
         hexes[y][x] += (col == 3) ? "" : componentToHex(pix); // if the alpha channel do not do anything
     });
@@ -313,4 +333,26 @@ function rgbToHex(r, g, b) {
 function componentToHex(c) {
     let hex = c.toString(16);
     return (hex.length == 1) ? "0" + hex : hex;
+}
+
+const gni = (i, s) => getNearestIndex(i, s);
+// Used to get the nearest index value that is not its own 
+function getNearestIndex(index, side) {
+    //     -1        :       1
+    // 1 -> 2 = + 1  :  1 -> 3 =   2
+    // 2 -> 1 = - 1  :  2 -> 3 =   1
+    // 3 -> 1 = - 2  :  3 -> 2 = - 1
+    let offset, t = index % 4;
+    switch (t) {
+        case 0:
+            offset = (side == -1) ? 1 : 2;
+            break;
+        case 1:
+            offset = (side == -1) ? -1 : 1;
+            break;
+        case 2:
+            offset = (side == -1) ? -2 : -1;
+            break;
+    }
+    return (index + offset);
 }
