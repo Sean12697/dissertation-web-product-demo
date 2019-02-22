@@ -6,6 +6,8 @@ let encoded = [],
     snippetAfter,
     xPreviousClicked,
     yPreviousClicked,
+    pageXPreviousClicked,
+    pageYPreviousClicked,
     snippetSize = 16,
     txtTable,
     imageDataUsing,
@@ -45,16 +47,10 @@ function mouseUpCanvasBeforeEventListener() {
         // Setting global x/y for use when getting the same block after re-quantizing the image
         xPreviousClicked = x;
         yPreviousClicked = y;
+        pageXPreviousClicked = e.pageX;
+        pageYPreviousClicked = e.pageY;
         // Creating snippets
         createSnippets();
-        // Show selection via modifying a floating elements style properties
-        let beforeSelectionBox = document.getElementById("lennaBeforeSelectedBox");
-        beforeSelectionBox.style.display = `inline-block`;
-        beforeSelectionBox.style.width = `${snippetSize}px`;
-        beforeSelectionBox.style.height = `${snippetSize}px`;
-        beforeSelectionBox.style.left = `${e.pageX-(snippetSize/2)}px`; // to centralize the element
-        beforeSelectionBox.style.top = `${e.pageY-(snippetSize/2)}px`; // to centralize the element
-        beforeSelectionBox.style["z-index"] = 2; // to float on top of the canvas
     });
 }
 
@@ -106,6 +102,7 @@ function changeSizeEventListener() {
     document.getElementById("size").addEventListener("change", () => {
         snippetSize = parseInt(document.getElementById("size").value);
         document.getElementById("txtSize").innerHTML = `${snippetSize}*${snippetSize}`;
+        createSnippets();
     });
 }
 
@@ -177,6 +174,13 @@ function createSnippets() {
     // Setting snippet values
     hexArrayToCanvas(imageDataToHexes(snippetBefore), "cnvsBeforeSnippet");
     hexArrayToCanvas(imageDataToHexes(snippetAfter), "cnvsAfterSnippet");
+    // Show selection via modifying a floating elements style properties
+    let beforeSelectionBox = document.getElementById("lennaBeforeSelectedBox");
+    beforeSelectionBox.style.display = `inline-block`;
+    beforeSelectionBox.style.width = `${snippetSize}px`;
+    beforeSelectionBox.style.height = `${snippetSize}px`;
+    beforeSelectionBox.style.left = `${pageXPreviousClicked-(snippetSize/2)}px`; // to centralize the element
+    beforeSelectionBox.style.top = `${pageYPreviousClicked-(snippetSize/2)}px`; // to centralize the element
 }
 
 // added UX for reset to default table
