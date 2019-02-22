@@ -323,7 +323,7 @@ var quantized = quantize(coef, qtable);
 var dequantized = dequantize(quantized, qtable);
 var reconstructed = idct(dequantized);
 
-console.log("Sanity Tests matching up the values produced by my implementation,s to the values shown on page 12 of the following research document: ");
+console.log("Sanity Tests matching up the values produced by my implementations (being called at the end of my 'dct-based-encoder.js' script), to the values shown on page 12 of the following research document: ");
 console.log("https://www.ijg.org/files/Wallace.JPEG.pdf");
 
 console.log("Source Image Samples");
