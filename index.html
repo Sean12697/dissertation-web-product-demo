@@ -39,26 +39,35 @@
             <canvas id="cnvsBeforeSnippet" width="512" height="512"></canvas>
         </section>
         <section>
-                <canvas id="table" width="400px" height="400px"></canvas>
-                <div id="scales">
-                    <div><p>Low</p><input type="range" id="low" class="scale" min="0" max="1" step="0.05" defaultValue="0.5"></div>
-                    <div><p>Low-Mid</p><input type="range" id="low-mid" class="scale" min="0" max="1" step="0.05" defaultValue="0.5"></div>
-                    <div><p>Mid</p><input type="range" id="mid" class="scale" min="0" max="1" step="0.05" defaultValue="0.5"></div>
-                    <div><p>Mid-High</p><input type="range" id="mid-high" class="scale" min="0" max="1" step="0.05" defaultValue="0.5"></div>
-                    <div><p>High</p><input type="range" id="high" class="scale" min="0" max="1" step="0.05" defaultValue="0.5"></div>
+                <div id="canvasMain">
+                    <canvas id="table" width="400px" height="400px"></canvas>
+                    <br>
+                    <button id="default">Reset Table</button>
                 </div>
+
+                <div id="scales">
+                    <div><p class="noselect">Low</p><input type="range" id="low" class="scale" min="0" max="1" step="0.05" defaultValue="0.5"></div>
+                    <div><p class="noselect">Low-Mid</p><input type="range" id="low-mid" class="scale" min="0" max="1" step="0.05" defaultValue="0.5"></div>
+                    <div><p class="noselect">Mid</p><input type="range" id="mid" class="scale" min="0" max="1" step="0.05" defaultValue="0.5"></div>
+                    <div><p class="noselect">Mid-High</p><input type="range" id="mid-high" class="scale" min="0" max="1" step="0.05" defaultValue="0.5"></div>
+                    <div><p class="noselect">High</p><input type="range" id="high" class="scale" min="0" max="1" step="0.05" defaultValue="0.5"></div>
+                </div>
+
                 <input id="txtTable" type="text" pattern="(\[((\[((([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]),){7}([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\]),){7}(\[((([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]),){7}([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\])\])">
+                <button id="copy">Copy</button>
+                <button id="paste">Paste</button>
+                
+                <button id="generate">Quantize</button>
+                <div id="meta">
+                    <div class="loader"></div>
+                </div>
+
                 <p>Sample size <span id="txtSize">16*16</span>: <input type="range" id="size" min="8" max="64" step="8" value="16"></p>
                 <div id="generateElements">
                     <button id="colourSwitch">Use Colour (SLOWER)</button>
-                    <button id="default">Use Default Table</button>
-                    <button id="generate">Quantize</button>
-                    <button id="copy">Copy Table Array</button>
                 </div>
-            <div id="meta">
-                <div class="loader"></div>
-            </div>
-            <p id="txtUpload">Upload your own photo: </p><input id="upload" type='file'/>
+
+            <p id="txtUpload">Upload your own JPEG: </p><input id="upload" type='file'/>
         </section>
         <section>
             <canvas id="cnvsLennaAfter" width="512" height="512"></canvas>

@@ -178,7 +178,10 @@ function scalesMatchArray() {
 }
 
 function renderTables() {
-    drawOnCanvas(qtable, "table", (i) => `rgba(${i},${i},${i},0.6)`);
+    drawOnCanvas(qtable, "table", (i) => {
+        let c = convertRange(i, 1, 255, 200, 100);
+        return `rgba(${c},${c},${c},1)`;
+    });
     txtTable.value = `[${qtable.map(line => '[' + line.toString() + ']').toString()}]`;
 }
 
