@@ -22,6 +22,18 @@ article section {
     vertical-align: top;
 }
 
+#sampleSizeDiv {
+    display: block;
+}
+
+#sampleSizeDiv * {
+    display: inline-block;
+}
+
+#sampleSizeDiv p {
+    width: 150px;
+}
+
 /* #txtTable:hover + ::after {
     content: 'Use me to keep a copy of the table you have produced';
     clear: both;
@@ -118,11 +130,6 @@ button {
 
 #scales input[type="range"] {
     width: 100%;
-}
-
-#size {
-    display: inline-block;
-    width: calc(100% - 300px);
 }
 
 #txtTable, #copy, #paste {
