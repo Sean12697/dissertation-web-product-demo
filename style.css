@@ -135,6 +135,36 @@ button, #txtTable {
                                 supported by Chrome and Opera */
 }
 
+[type="range"] {
+    -webkit-appearance: none;
+    height: 15px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.8;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+  }
+  
+  [type="range"]:hover {
+    opacity: 1;
+  }
+  
+  [type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    background-color: rgb(63, 63, 63);
+    cursor: pointer;
+  }
+  
+  [type="range"]::-moz-range-thumb {
+    width: 15px;
+    height: 15px;
+    background-color: rgb(63, 63, 63);
+    cursor: pointer;
+  }
+
 /* LOAD SPINNER */
 
 .loader {
