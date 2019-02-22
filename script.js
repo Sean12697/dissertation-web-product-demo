@@ -8,7 +8,8 @@ let encoded = [],
     yPreviousClicked,
     snippetSize = 16,
     txtTable,
-    imageDataUsing;
+    imageDataUsing,
+    arrayRegex = /(\[((\[((([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]),){7}([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\]),){7}(\[((([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]),){7}([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\])\])/;
 
 // --------------------------------------- WINDOW LOADED ---------------------------------------------------
 
@@ -24,6 +25,7 @@ window.addEventListener('DOMContentLoaded', () => {
     clickCopyEventListener();
     clickDefaultTableEventListener();
     changeTxtTableEventListener();
+    clickPasteEventListener();
     changeSizeEventListener();
     clickColourSwitchEventListener();
     changeScalesArrayEventListener();
@@ -79,14 +81,18 @@ function clickDefaultTableEventListener() {
 function changeTxtTableEventListener() {
     // This regex is essentially matching a value of 1-255 7 times with a comma afterwards, then one more time without, with square brackets around it
     // Then similar again, it will match this array definition 7 times with a comma afterwards, then one more time without, with square brackets around it again 
-    let arrayRegex = /(\[((\[((([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]),){7}([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\]),){7}(\[((([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]),){7}([1-9]|[1-8][0-9]|9[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\])\])/;
     txtTable.addEventListener("change", () => {
         if (txtTable.value.toString().match(arrayRegex)) { // ensuring the text can be converted
-            let flatArrayStream = txtTable.value.toString().replace(/[\[\]']+/g, '').split(',');
-            qtable = flatArrayTo2DArray(flatArrayStream);
-            scalesMatchArray();
-            renderTables();
+            textToArray(txtTable.value.toString());
         }
+    });
+}
+
+function clickPasteEventListener() {
+    document.getElementById("paste").addEventListener("click", () => {
+        navigator.clipboard.readText().then(t => {
+            if (t.match(arrayRegex)) textToArray(t);
+        }).catch(alert('Failed to read clipboard contents: ' + err));
     });
 }
 
@@ -310,6 +316,13 @@ function arrayRGBAToHexes(RGBArray) {
 }
 
 // ------------------------------------- HELPER FUNCTIONS -----------------------------------------------------
+
+function textToArray(text) {
+    let flatArrayStream = text.replace(/[\[\]']+/g, '').split(',');
+    qtable = flatArrayTo2DArray(flatArrayStream);
+    scalesMatchArray();
+    renderTables();
+}
 
 function make3DArray(depth, width, height) {
     let arr = new Array(depth);
