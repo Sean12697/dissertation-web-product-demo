@@ -10,7 +10,7 @@ const signals = [
 ];
 
 const defaulTable = [
-  [16, 11, 10, 16, 34, 40, 51, 61],
+  [16, 11, 10, 16, 24, 40, 51, 61],
   [12, 12, 14, 19, 26, 58, 60, 55],
   [14, 13, 16, 24, 40, 57, 69, 56],
   [14, 17, 22, 29, 51, 87, 80, 62],
@@ -25,7 +25,7 @@ let qtable = defaulTable;
 // ----------------------- MAIN FUNCTIONS ------------------------
 
 function fdct(signals) {
-  var coef = dct([].concat.apply([], signals).map(v => v-128));
+  var coef = dct([].concat.apply([], signals).map(v => v-128)).map(v => Math.round(v*10)/10);
   return signals.map((line, i) => line.map((e, j) => coef[(i * line.length) + j]));
 }
 
@@ -318,23 +318,23 @@ function idct1d(block) {
 // From the following samples on page 12 of this publication
 // https://www.ijg.org/files/Wallace.JPEG.pdf
 
-var coef = fdct(signals);
-var quantized = quantize(coef, qtable);
-var dequantized = dequantize(quantized, qtable);
-var reconstructed = idct(dequantized);
+// var coef = fdct(signals);
+// var quantized = quantize(coef, qtable);
+// var dequantized = dequantize(quantized, qtable);
+// var reconstructed = idct(dequantized);
 
-console.log("Sanity Tests matching up the values produced by my implementations (being called at the end of my 'dct-based-encoder.js' script), to the values shown on page 12 of the following research document: ");
-console.log("https://www.ijg.org/files/Wallace.JPEG.pdf");
+// console.log("Sanity Tests matching up the values produced by my implementations (being called at the end of my 'dct-based-encoder.js' script), to the values shown on page 12 of the following research document: ");
+// console.log("https://www.ijg.org/files/Wallace.JPEG.pdf");
 
-console.log("Source Image Samples");
-console.table(signals);
-console.log("Forward DCT Coefficients");
-console.table(coef);
-console.log("Quantization Table");
-console.table(qtable);
-console.log("Normalized Quantized Coefficients");
-console.table(quantized);
-console.log("Denormalized Quantized Coefficients");
-console.table(dequantized);
-console.log("Reconstructed Image Samples");
-console.table(reconstructed);
+// console.log("Source Image Samples");
+// console.table(signals);
+// console.log("Forward DCT Coefficients");
+// console.table(coef);
+// console.log("Quantization Table");
+// console.table(qtable);
+// console.log("Normalized Quantized Coefficients");
+// console.table(quantized);
+// console.log("Denormalized Quantized Coefficients");
+// console.table(dequantized);
+// console.log("Reconstructed Image Samples");
+// console.table(reconstructed);
