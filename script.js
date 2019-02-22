@@ -23,6 +23,7 @@ window.addEventListener('DOMContentLoaded', () => {
     addImage("lenna.png", "cnvsLennaBefore");
     // Setting up event listeners for important elements
     mouseUpCanvasBeforeEventListener();
+    mouseUpCanvasAfterEventListener();
     clickGenerateEventListner();
     clickCopyEventListener();
     clickDefaultTableEventListener();
@@ -37,21 +38,27 @@ window.addEventListener('DOMContentLoaded', () => {
 // --------------------------------------- EVENT LISTENERS ----------------------------------------------------
 
 function mouseUpCanvasBeforeEventListener() {
-    document.getElementById("cnvsLennaBefore").addEventListener("mouseup", e => {
-        // Creating canvas element variable
-        let canvasBefore = document.getElementById("cnvsLennaBefore");
-        // Creating x/y of where the user has clicked on the canvas
-        // width divided by client width needed to fix the issue the canvas is being scaled with CSS (for responsiveness)
-        let x = e.offsetX * (canvasBefore.width / canvasBefore.clientWidth),
-            y = e.offsetY * (canvasBefore.height / canvasBefore.clientHeight);
-        // Setting global x/y for use when getting the same block after re-quantizing the image
-        xPreviousClicked = x;
-        yPreviousClicked = y;
-        pageXPreviousClicked = e.pageX;
-        pageYPreviousClicked = e.pageY;
-        // Creating snippets
-        createSnippets();
-    });
+    document.getElementById("cnvsLennaBefore").addEventListener("mouseup", canvasClick);
+}
+
+function mouseUpCanvasAfterEventListener() {
+    document.getElementById("cnvsLennaAfter").addEventListener("mouseup", canvasClick);
+}
+
+function canvasClick(e) {
+    // Creating canvas element variable
+    let canvasBefore = document.getElementById("cnvsLennaBefore");
+    // Creating x/y of where the user has clicked on the canvas
+    // width divided by client width needed to fix the issue the canvas is being scaled with CSS (for responsiveness)
+    let x = e.offsetX * (canvasBefore.width / canvasBefore.clientWidth),
+        y = e.offsetY * (canvasBefore.height / canvasBefore.clientHeight);
+    // Setting global x/y for use when getting the same block after re-quantizing the image
+    xPreviousClicked = x;
+    yPreviousClicked = y;
+    pageXPreviousClicked = e.pageX;
+    pageYPreviousClicked = e.pageY;
+    // Creating snippets
+    createSnippets();
 }
 
 function clickGenerateEventListner() {
@@ -72,7 +79,7 @@ function clickCopyEventListener() {
 
 function clickDefaultTableEventListener() {
     document.getElementById("default").addEventListener('click', () => {
-        setWarningText();                 
+        setWarningText();
         qtable = defaulTable;
         scalesMatchArray();
         renderTables();
@@ -120,7 +127,7 @@ function clickColourSwitchEventListener() {
 function changeScalesArrayEventListener() {
     scalesArray.forEach((x, i) => {
         x.addEventListener('change', () => {
-            setWarningText();          
+            setWarningText();
             let tableStream = arrayToZigZag(defaulTable),
                 bit = Math.round(tableStream.length / scalesArray.length) + 1;
             let modified = tableStream.map((v, j) => Math.round(scalesArray[Math.floor(j / bit)].value * 254) + 1);
