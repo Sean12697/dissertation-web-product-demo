@@ -51,6 +51,7 @@ canvas {
 
 #scales {
     width: 33%;
+    margin-top: -20px;
 }
 
 #meta {
@@ -137,6 +138,33 @@ button, #txtTable {
 
 .red {
     color: red;
+}
+
+.animateIn {
+    overflow: hidden;
+    -webkit-animation: slide-top 1s;
+	        animation: slide-top 1s;
+}
+
+@-webkit-keyframes slide-top {
+    0% {
+        -webkit-transform: translateY(-20px);
+                transform: translateY(-20px);
+    }
+    100% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+    }
+}
+  @keyframes slide-top {
+    0% {
+        -webkit-transform: translateY(-20px);
+                transform: translateY(-20px);
+    }
+    100% {
+        -webkit-transform: translateY(0);
+                transform: translateY(0);
+    }
 }
 
 [type="range"] {

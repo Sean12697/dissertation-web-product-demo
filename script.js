@@ -60,7 +60,9 @@ function mouseUpCanvasBeforeEventListener() {
 
 function clickGenerateEventListner() {
     document.getElementById("generate").addEventListener('click', () => {
-        document.getElementById("warningText").innerHTML = "";
+        let warningText = document.getElementById("warningText");
+        warningText.classList.remove("animateIn");
+        warningText.innerHTML = "_";
         encodeDecodeToCanvas(document.getElementById("cnvsLennaBefore"), "cnvsLennaAfter");
     });
 }
@@ -267,7 +269,9 @@ function redrawCanvas(canvas, imageData) {
 }
 
 function setWarningText() {
-    document.getElementById("warningText").innerHTML = "Remember to click the Quantize button for the image to update";
+    let element = document.getElementById("warningText");
+    element.innerHTML = "Remember to click the Quantize button for the image to update";
+    element.classList.add("animateIn");
 }
 
 function setMetaText(text) {
